@@ -1,7 +1,6 @@
-import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { universitiesAPI } from '@/lib/api';
-import { PeerInsights, type PeerStats } from './PeerInsights';
+import { PeerInsights } from './PeerInsights';
 import { MapPin, Calendar, Star, Zap } from 'lucide-react';
 
 interface University {

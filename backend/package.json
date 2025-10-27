@@ -7,7 +7,11 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "seed": "node seed/index.js"
+    "seed": "node seed/index.js",
+    "debug-peer-stats": "node debug-peer-stats.js",
+    "fix-peer-stats": "node fix-peer-stats.js",
+    "debug-user-tasks": "node debug-user-tasks.js",
+    "create-sample-tasks": "node create-sample-tasks.js"
   },
   "keywords": ["application", "planner", "api"],
   "author": "",

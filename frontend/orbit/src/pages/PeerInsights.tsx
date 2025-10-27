@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { userUniversitiesAPI, universitiesAPI } from '@/lib/api';
 import { PeerInsights as PeerInsightsComponent, type PeerStats } from '@/components/PeerInsights';
@@ -63,7 +63,7 @@ export function PeerInsights() {
     queryFn: async () => {
       if (universityIds.length === 0) return [];
       
-      const statsPromises = universityIds.map(id => 
+      const statsPromises = universityIds.map((id: number) => 
         universitiesAPI.getPeerStats(id).catch(() => ({ data: null }))
       );
       
@@ -150,6 +150,24 @@ export function PeerInsights() {
       await refetchPeerStats();
     } catch (error) {
       console.error('Failed to calculate peer stats:', error);
+    } finally {
+      setIsCalculating(false);
+    }
+  };
+
+  // Seed sample peer statistics
+  const handleSeedSampleStats = async () => {
+    setIsCalculating(true);
+    try {
+      const response = await universitiesAPI.seedSamplePeerStats();
+      console.log('Sample stats seeded:', response.data);
+      await refetchPeerStats();
+      
+      // Show success message
+      alert(`✅ Success! Seeded peer stats for ${response.data.universities_processed} universities. Refresh the page to see the data.`);
+    } catch (error) {
+      console.error('Failed to seed sample peer stats:', error);
+      alert('❌ Failed to seed sample peer stats. Please check the console for details.');
     } finally {
       setIsCalculating(false);
     }
@@ -309,15 +327,27 @@ export function PeerInsights() {
                 </button>
               </div>
 
-              {/* Refresh Stats Button */}
-              <button
-                onClick={handleCalculateStats}
-                disabled={isCalculating}
-                className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white text-sm rounded-md hover:bg-blue-600 disabled:opacity-50 transition-colors"
-              >
-                <RefreshCw className={`h-4 w-4 ${isCalculating ? 'animate-spin' : ''}`} />
-                {isCalculating ? 'Calculating...' : 'Refresh Data'}
-              </button>
+              {/* Action Buttons */}
+              <div className="flex gap-2">
+                <button
+                  onClick={handleSeedSampleStats}
+                  disabled={isCalculating}
+                  className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white text-sm rounded-md hover:bg-green-600 disabled:opacity-50 transition-colors"
+                  title="Seed sample peer statistics data for demo purposes"
+                >
+                  <RefreshCw className={`h-4 w-4 ${isCalculating ? 'animate-spin' : ''}`} />
+                  {isCalculating ? 'Seeding...' : 'Seed Sample Data'}
+                </button>
+                <button
+                  onClick={handleCalculateStats}
+                  disabled={isCalculating}
+                  className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white text-sm rounded-md hover:bg-blue-600 disabled:opacity-50 transition-colors"
+                  title="Calculate peer statistics from actual user data"
+                >
+                  <RefreshCw className={`h-4 w-4 ${isCalculating ? 'animate-spin' : ''}`} />
+                  {isCalculating ? 'Calculating...' : 'Refresh Data'}
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -333,9 +363,20 @@ export function PeerInsights() {
                 : 'No universities match your current filter criteria.'
               }
             </p>
-            <button className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
-              Add Universities
-            </button>
+            <div className="flex gap-2 justify-center">
+              <button className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                Add Universities
+              </button>
+              {summaryStats.universitiesWithData === 0 && (
+                <button 
+                  onClick={handleSeedSampleStats}
+                  disabled={isCalculating}
+                  className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 disabled:opacity-50"
+                >
+                  {isCalculating ? 'Seeding...' : 'Seed Sample Data'}
+                </button>
+              )}
+            </div>
           </div>
         ) : (
           <div className="space-y-6">

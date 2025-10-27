@@ -228,15 +228,44 @@ router.post('/calculate-peer-stats', async (req, res) => {
 
     console.log(`Updating ${peerStatsUpdates.length} peer stats records`);
 
-    // Upsert peer stats (update if exists, insert if not)
+    // Manually handle upsert (update if exists, insert if not)
     if (peerStatsUpdates.length > 0) {
-      const { error: upsertError } = await supabase
-        .from('peer_stats')
-        .upsert(peerStatsUpdates, {
-          onConflict: 'university_id'
-        });
+      for (const statUpdate of peerStatsUpdates) {
+        // Check if peer stat already exists for this university
+        const { data: existing, error: checkError } = await supabase
+          .from('peer_stats')
+          .select('id')
+          .eq('university_id', statUpdate.university_id)
+          .single();
 
-      if (upsertError) throw upsertError;
+        if (checkError && checkError.code !== 'PGRST116') {
+          // PGRST116 means no rows returned, which is expected for new records
+          throw checkError;
+        }
+
+        if (existing) {
+          // Update existing record
+          const { error: updateError } = await supabase
+            .from('peer_stats')
+            .update({
+              avg_progress_percentage: statUpdate.avg_progress_percentage,
+              avg_tasks_completed: statUpdate.avg_tasks_completed,
+              avg_days_before_deadline: statUpdate.avg_days_before_deadline,
+              sample_size: statUpdate.sample_size,
+              last_updated: statUpdate.last_updated
+            })
+            .eq('university_id', statUpdate.university_id);
+
+          if (updateError) throw updateError;
+        } else {
+          // Insert new record
+          const { error: insertError } = await supabase
+            .from('peer_stats')
+            .insert(statUpdate);
+
+          if (insertError) throw insertError;
+        }
+      }
     }
 
     console.log('Peer stats calculation completed successfully');
@@ -250,6 +279,93 @@ router.post('/calculate-peer-stats', async (req, res) => {
   } catch (error) {
     console.error('Error calculating peer stats:', error);
     res.status(500).json({ error: 'Failed to calculate peer statistics' });
+  }
+});
+
+// Seed sample peer stats for testing/demo purposes
+router.post('/seed-sample-peer-stats', async (req, res) => {
+  try {
+    console.log('Seeding sample peer statistics...');
+
+    // Get all universities
+    const { data: universities, error: uniError } = await supabase
+      .from('universities')
+      .select('id, name, world_ranking')
+      .order('world_ranking', { ascending: true });
+
+    if (uniError) throw uniError;
+
+    if (!universities || universities.length === 0) {
+      return res.status(404).json({ error: 'No universities found. Please seed universities first.' });
+    }
+
+    console.log(`Found ${universities.length} universities to create peer stats for`);
+
+    // Sample peer stats data
+    const samplePeerStats = [
+      { avg_progress: 45, avg_tasks: 3.15, avg_days: 42, sample_size: 342 }, // Harvard Business School
+      { avg_progress: 52, avg_tasks: 3.64, avg_days: 38, sample_size: 421 }, // Stanford GSB
+      { avg_progress: 48, avg_tasks: 3.36, avg_days: 45, sample_size: 389 }, // Wharton
+      { avg_progress: 41, avg_tasks: 2.87, avg_days: 52, sample_size: 267 }, // MIT Sloan
+      { avg_progress: 43, avg_tasks: 3.01, avg_days: 49, sample_size: 298 }, // Kellogg
+      { avg_progress: 44, avg_tasks: 3.08, avg_days: 47, sample_size: 312 },
+      { avg_progress: 39, avg_tasks: 2.73, avg_days: 55, sample_size: 234 },
+      { avg_progress: 46, avg_tasks: 3.22, avg_days: 43, sample_size: 367 },
+      { avg_progress: 47, avg_tasks: 3.29, avg_days: 41, sample_size: 389 },
+      { avg_progress: 42, avg_tasks: 2.94, avg_days: 50, sample_size: 289 },
+    ];
+
+    // Create peer stats for each university
+    const peerStatsToInsert = universities.map((university, index) => {
+      const statIndex = index < samplePeerStats.length ? index : index % samplePeerStats.length;
+      const sampleStat = samplePeerStats[statIndex];
+      
+      return {
+        university_id: university.id,
+        avg_progress_percentage: sampleStat.avg_progress,
+        avg_tasks_completed: sampleStat.avg_tasks,
+        avg_days_before_deadline: sampleStat.avg_days,
+        sample_size: sampleStat.sample_size,
+        last_updated: new Date().toISOString()
+      };
+    });
+
+    console.log(`Creating ${peerStatsToInsert.length} peer stats records`);
+
+    // Delete existing peer stats to avoid conflicts
+    const { error: deleteError } = await supabase
+      .from('peer_stats')
+      .delete()
+      .neq('id', 0);
+
+    if (deleteError) {
+      console.warn('Warning deleting existing peer stats:', deleteError);
+    }
+
+    // Insert new peer stats
+    const { error: insertError } = await supabase
+      .from('peer_stats')
+      .insert(peerStatsToInsert);
+
+    if (insertError) {
+      console.error('Error inserting peer stats:', insertError);
+      throw insertError;
+    }
+
+    console.log('✅ Sample peer stats seeded successfully');
+
+    res.json({
+      message: 'Sample peer statistics seeded successfully',
+      universities_processed: universities.length,
+      peer_stats_created: peerStatsToInsert.length,
+      sample_harvard_stat: peerStatsToInsert.find(stat => 
+        universities.find(uni => uni.id === stat.university_id)?.name?.includes('Harvard')
+      )
+    });
+
+  } catch (error) {
+    console.error('Error seeding sample peer stats:', error);
+    res.status(500).json({ error: 'Failed to seed sample peer statistics', details: error.message });
   }
 });
 

@@ -27,6 +27,7 @@ export const universitiesAPI = {
   compare: (ids: number[]) => api.get('/api/universities/compare', { params: { ids: ids.join(',') } }),
   getPeerStats: (id: number) => api.get(`/api/universities/${id}/peer-stats`),
   calculatePeerStats: () => api.post('/api/universities/calculate-peer-stats'),
+  seedSamplePeerStats: () => api.post('/api/universities/seed-sample-peer-stats'),
 };
 
 export const userUniversitiesAPI = {
