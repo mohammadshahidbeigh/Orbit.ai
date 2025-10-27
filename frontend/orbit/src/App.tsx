@@ -9,6 +9,7 @@ import { Recommendations } from './pages/Recommendations';
 // import { TaskBoard } from './pages/TaskBoard';
 // import { Timeline } from './pages/Timeline';
 import { CompareUniversities } from './pages/CompareUniversities';
+import { PeerInsights } from './pages/PeerInsights';
 import './App.css';
 
 // Create a query client
@@ -34,6 +35,7 @@ function Navigation() {
     { path: '/', label: 'Dashboard', icon: '📊' },
     { path: '/manage-schools', label: 'Manage Schools', icon: '🏫' },
     { path: '/compare', label: 'Compare', icon: '⚖️' },
+    { path: '/peer-insights', label: 'Peer Insights', icon: '👥' },
   ];
 
   return (
@@ -127,6 +129,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <CompareUniversities />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/peer-insights"
+        element={
+          <ProtectedRoute>
+            <PeerInsights />
           </ProtectedRoute>
         }
       />

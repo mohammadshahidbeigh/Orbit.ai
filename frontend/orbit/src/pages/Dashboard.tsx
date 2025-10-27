@@ -158,6 +158,9 @@ export function Dashboard() {
             <Button onClick={() => (window.location.href = '/compare')} variant="outline">
               Compare Universities
             </Button>
+            <Button onClick={() => (window.location.href = '/peer-insights')} variant="outline">
+              Peer Insights
+            </Button>
           </div>
         </CardContent>
       </Card>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { userUniversitiesAPI } from '@/lib/api';
+import { userUniversitiesAPI, universitiesAPI } from '@/lib/api';
+import { PeerInsights, type PeerStats } from '@/components/PeerInsights';
 
 interface University {
   id: number;
@@ -26,6 +27,7 @@ interface ComparisonUniversity extends University {
   assessmentScore?: number;
   assessmentBreakdown?: Record<string, number>;
   assessmentData?: any;
+  peerStats?: PeerStats;
 }
 
 const URGENCY_COLORS = {
@@ -54,6 +56,25 @@ export function CompareUniversities() {
     queryFn: () => userUniversitiesAPI.getComparisonData()
   });
 
+  // Fetch peer stats for selected universities
+  const { data: peerStatsData } = useQuery({
+    queryKey: ['peer-stats', selectedUniversities],
+    queryFn: async () => {
+      if (selectedUniversities.length === 0) return [];
+      
+      const statsPromises = selectedUniversities.map(id => 
+        universitiesAPI.getPeerStats(id).catch(() => null)
+      );
+      
+      const results = await Promise.all(statsPromises);
+      return results.map((result, index) => ({
+        university_id: selectedUniversities[index],
+        stats: result?.data || null
+      }));
+    },
+    enabled: selectedUniversities.length > 0
+  });
+
   // Extract data from API responses
   const userUniversities = userUniversitiesResponse?.data || [];
 
@@ -62,6 +83,10 @@ export function CompareUniversities() {
     return selectedUniversities.map(uniId => {
       const userUni = userUniversities.find((u: any) => u.id === uniId);
       if (!userUni) return null;
+
+      // Find peer stats for this university
+      const peerStatsEntry = peerStatsData?.find(p => p.university_id === uniId);
+      const peerStats = peerStatsEntry?.stats || null;
 
       // Mock task breakdown (in real app, this would come from API)
       const taskBreakdown = {
@@ -79,10 +104,11 @@ export function CompareUniversities() {
       return {
         ...userUni,
         tasksRemaining,
-        taskBreakdown
+        taskBreakdown,
+        peerStats
       };
     }).filter(Boolean) as ComparisonUniversity[];
-  }, [selectedUniversities, userUniversities]);
+  }, [selectedUniversities, userUniversities, peerStatsData]);
 
   // Sort comparison data
   const sortedData = React.useMemo(() => {
@@ -385,6 +411,46 @@ export function CompareUniversities() {
                   ))}
                 </tbody>
               </table>
+            </div>
+          </div>
+        )}
+
+        {/* Peer Insights Section */}
+        {selectedUniversities.length > 0 && (
+          <div className="mt-6 bg-white rounded-lg shadow-sm p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-6">Peer Comparison Insights</h3>
+            <p className="text-gray-600 mb-6">
+              See how fellow applicants are progressing with their applications to understand benchmarks and get motivated.
+            </p>
+            
+            <div className="space-y-6">
+              {sortedData.map((university) => {
+                // Calculate user's current progress
+                const userProgress = university.tasksRemaining > 0 
+                  ? Math.round(((Object.values(university.taskBreakdown).reduce((sum, count) => sum + count, 0) - university.tasksRemaining) / Object.values(university.taskBreakdown).reduce((sum, count) => sum + count, 0)) * 100)
+                  : 100;
+                
+                const userTasksCompleted = Object.values(university.taskBreakdown).reduce((sum, count) => sum + count, 0) - university.tasksRemaining;
+
+                return (
+                  <div key={university.id} className="border border-gray-200 rounded-lg overflow-hidden">
+                    <div className="bg-gray-50 px-4 py-3 border-b">
+                      <h4 className="font-medium text-gray-900">{university.name}</h4>
+                      <p className="text-sm text-gray-600">{university.country} • {university.program_type}</p>
+                    </div>
+                    
+                    <div className="p-4">
+                      <PeerInsights
+                        stats={university.peerStats || null}
+                        universityName={university.name}
+                        userProgress={userProgress}
+                        userTasksCompleted={userTasksCompleted}
+                        showComparison={true}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}

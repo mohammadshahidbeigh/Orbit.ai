@@ -132,4 +132,125 @@ router.get('/:id/peer-stats', async (req, res) => {
   }
 });
 
+// Calculate and update peer statistics
+router.post('/calculate-peer-stats', async (req, res) => {
+  try {
+    console.log('Starting peer stats calculation...');
+
+    // Get all user universities with their tasks
+    const { data: userUniversities, error: userError } = await supabase
+      .from('user_universities')
+      .select(`
+        id,
+        university_id,
+        application_deadline,
+        status,
+        tasks (
+          id,
+          status,
+          due_date,
+          created_at
+        )
+      `)
+      .eq('status', 'Active');
+
+    if (userError) throw userError;
+
+    console.log(`Found ${userUniversities?.length || 0} active user universities`);
+
+    // Group by university and calculate stats
+    const universityStats = {};
+    
+    userUniversities?.forEach(userUni => {
+      const universityId = userUni.university_id;
+      if (!universityStats[universityId]) {
+        universityStats[universityId] = [];
+      }
+
+      // Calculate progress for this user-university
+      const totalTasks = userUni.tasks?.length || 0;
+      const completedTasks = userUni.tasks?.filter(t => t.status === 'Completed')?.length || 0;
+      const progress = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+
+      // Calculate days before deadline (from task completion dates)
+      let avgDaysBeforeDeadline = 0;
+      if (userUni.application_deadline && completedTasks > 0) {
+        const deadlineDate = new Date(userUni.application_deadline);
+        const completedTaskDays = userUni.tasks
+          .filter(t => t.status === 'Completed' && t.updated_at)
+          .map(t => {
+            const completionDate = new Date(t.updated_at);
+            const daysBeforeDeadline = Math.floor((deadlineDate - completionDate) / (1000 * 60 * 60 * 24));
+            return Math.max(0, daysBeforeDeadline);
+          });
+        
+        avgDaysBeforeDeadline = completedTaskDays.length > 0 
+          ? Math.round(completedTaskDays.reduce((sum, days) => sum + days, 0) / completedTaskDays.length)
+          : 0;
+      }
+
+      universityStats[universityId].push({
+        progress,
+        completedTasks,
+        avgDaysBeforeDeadline
+      });
+    });
+
+    console.log(`Calculated stats for ${Object.keys(universityStats).length} universities`);
+
+    // Calculate averages and update peer_stats table
+    const peerStatsUpdates = [];
+    
+    for (const [universityId, userStats] of Object.entries(universityStats)) {
+      if (userStats.length === 0) continue;
+
+      const avgProgress = Math.round(
+        userStats.reduce((sum, stat) => sum + stat.progress, 0) / userStats.length
+      );
+      
+      const avgTasksCompleted = Math.round(
+        (userStats.reduce((sum, stat) => sum + stat.completedTasks, 0) / userStats.length) * 100
+      ) / 100;
+      
+      const avgDaysBeforeDeadline = Math.round(
+        userStats.reduce((sum, stat) => sum + stat.avgDaysBeforeDeadline, 0) / userStats.length
+      );
+
+      peerStatsUpdates.push({
+        university_id: parseInt(universityId),
+        avg_progress_percentage: avgProgress,
+        avg_tasks_completed: avgTasksCompleted,
+        avg_days_before_deadline: avgDaysBeforeDeadline,
+        sample_size: userStats.length,
+        last_updated: new Date().toISOString()
+      });
+    }
+
+    console.log(`Updating ${peerStatsUpdates.length} peer stats records`);
+
+    // Upsert peer stats (update if exists, insert if not)
+    if (peerStatsUpdates.length > 0) {
+      const { error: upsertError } = await supabase
+        .from('peer_stats')
+        .upsert(peerStatsUpdates, {
+          onConflict: 'university_id'
+        });
+
+      if (upsertError) throw upsertError;
+    }
+
+    console.log('Peer stats calculation completed successfully');
+
+    res.json({
+      message: 'Peer statistics calculated and updated successfully',
+      updated_universities: peerStatsUpdates.length,
+      total_sample_size: peerStatsUpdates.reduce((sum, stat) => sum + stat.sample_size, 0)
+    });
+
+  } catch (error) {
+    console.error('Error calculating peer stats:', error);
+    res.status(500).json({ error: 'Failed to calculate peer statistics' });
+  }
+});
+
 export default router;
