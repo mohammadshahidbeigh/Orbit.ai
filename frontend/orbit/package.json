@@ -27,7 +27,8 @@
     "zod": "^3.23.8",
     "@hookform/resolvers": "^3.3.4",
     "jspdf": "^2.5.2",
-    "react-to-print": "^2.14.15"
+    "react-to-print": "^2.14.15",
+    "@supabase/supabase-js": "^2.39.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",

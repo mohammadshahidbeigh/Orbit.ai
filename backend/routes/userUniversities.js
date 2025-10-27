@@ -2,10 +2,20 @@ import express from 'express';
 import { supabase } from '../config/supabase.js';
 
 const router = express.Router();
-const USER_ID = 'demo-user'; // For demo purposes
+
+// Middleware to get user ID from Supabase auth (coming from frontend)
+const getUser = async (req, res, next) => {
+  // For now, extract user ID from Authorization header
+  // In production, verify JWT token from Supabase
+  const authHeader = req.headers.authorization;
+  const userEmail = req.headers['x-user-email'] || 'demo-user@example.com'; // Fallback for testing
+  
+  req.userId = userEmail; // Use email as user identifier
+  next();
+};
 
 // Get user's selected universities
-router.get('/', async (req, res) => {
+router.get('/', getUser, async (req, res) => {
   try {
     const { data, error } = await supabase
       .from('user_universities')
@@ -13,7 +23,7 @@ router.get('/', async (req, res) => {
         *,
         universities (*)
       `)
-      .eq('user_id', USER_ID)
+      .eq('user_id', req.userId)
       .order('application_deadline', { ascending: true });
     
     if (error) throw error;
@@ -35,7 +45,7 @@ router.get('/', async (req, res) => {
 });
 
 // Add university to user's list
-router.post('/', async (req, res) => {
+router.post('/', getUser, async (req, res) => {
   try {
     const { university_id, program_type, application_deadline } = req.body;
 
@@ -58,7 +68,7 @@ router.post('/', async (req, res) => {
     const { data: userUniversity, error: insertError } = await supabase
       .from('user_universities')
       .insert({
-        user_id: USER_ID,
+        user_id: req.userId,
         university_id,
         program_type,
         application_deadline,
@@ -99,7 +109,7 @@ router.post('/', async (req, res) => {
 });
 
 // Update university deadline or program type
-router.put('/:id', async (req, res) => {
+router.put('/:id', getUser, async (req, res) => {
   try {
     const { program_type, application_deadline, status } = req.body;
     
@@ -127,13 +137,13 @@ router.put('/:id', async (req, res) => {
 });
 
 // Remove university from user's list
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', getUser, async (req, res) => {
   try {
     const { error } = await supabase
       .from('user_universities')
       .delete()
       .eq('id', req.params.id)
-      .eq('user_id', USER_ID);
+      .eq('user_id', req.userId);
     
     if (error) throw error;
     

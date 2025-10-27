@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { supabase } from './supabase';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
@@ -7,6 +8,15 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+});
+
+// Add request interceptor to include user email in headers
+api.interceptors.request.use(async (config) => {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (user) {
+    config.headers['x-user-email'] = user.email;
+  }
+  return config;
 });
 
 export default api;
