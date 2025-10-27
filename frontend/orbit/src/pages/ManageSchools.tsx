@@ -2,23 +2,51 @@ import { useQuery } from '@tanstack/react-query';
 import { universitiesAPI, userUniversitiesAPI } from '@/lib/api';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import { Search, Plus, GraduationCap, Sparkles } from 'lucide-react';
-import { useState } from 'react';
+import { Search, Plus, GraduationCap, Sparkles, Loader2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { Assessment } from './Assessment';
+import { toast } from 'react-toastify';
+
+// Custom debounce hook
+function useDebounce<T>(value: T, delay: number = 500): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+}
 
 export function ManageSchools() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedProgram, setSelectedProgram] = useState<string>('All');
   const [showAssessment, setShowAssessment] = useState(false);
   const [selectedUniversity, setSelectedUniversity] = useState<any>(null);
+  const [isTyping, setIsTyping] = useState(false);
 
-  // Fetch all universities
+  // Debounce the search query with 500ms delay
+  const debouncedSearchQuery = useDebounce(searchQuery, 500);
+
+  // Track if user is currently typing
+  useEffect(() => {
+    setIsTyping(searchQuery !== debouncedSearchQuery);
+  }, [searchQuery, debouncedSearchQuery]);
+
+  // Fetch all universities with debounced search
   const { data: universities, isLoading: isLoadingUniversities } = useQuery({
-    queryKey: ['universities', searchQuery],
+    queryKey: ['universities', debouncedSearchQuery],
     queryFn: async () => {
-      const response = await universitiesAPI.getAll({ search: searchQuery });
+      const response = await universitiesAPI.getAll({ search: debouncedSearchQuery });
       return response.data;
     },
+    staleTime: 30000, // Cache results for 30 seconds
   });
 
   // Fetch user's selected universities
@@ -102,14 +130,24 @@ export function ManageSchools() {
         assessment_data: assessmentData
       });
       
+      // Show success toast
+      toast.success(`${selectedUniversity.name} added to your list!`, {
+        position: 'top-right',
+        autoClose: 3000,
+      });
+      
       // Reset state
       setShowAssessment(false);
       setSelectedUniversity(null);
       
       // Refresh the user universities query
       window.location.reload(); // Simple refresh for now
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error adding university:', error);
+      toast.error(error.response?.data?.message || 'Failed to add university', {
+        position: 'top-right',
+        autoClose: 4000,
+      });
     }
   };
 
@@ -156,10 +194,13 @@ export function ManageSchools() {
               <input
                 type="text"
                 placeholder="Search by university name..."
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
+              {(isTyping || isLoadingUniversities) && (
+                <Loader2 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-500 h-5 w-5 animate-spin" />
+              )}
             </div>
             <select
               className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
@@ -224,7 +265,14 @@ export function ManageSchools() {
 
       {/* Available Universities */}
       <div>
-        <h2 className="text-xl font-semibold mb-4">Available Universities</h2>
+        <h2 className="text-xl font-semibold mb-4">
+          Available Universities
+          {(isTyping || isLoadingUniversities) && searchQuery && (
+            <span className="ml-2 text-sm text-gray-500 font-normal">
+              Searching...
+            </span>
+          )}
+        </h2>
         {filteredUniversities && filteredUniversities.length > 0 ? (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {filteredUniversities.map((uni: any) => {
