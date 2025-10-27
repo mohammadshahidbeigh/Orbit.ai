@@ -74,7 +74,7 @@ An enhanced version of Orbit AI's Application Planner with intelligent universit
 ### Deployment
 - **Frontend**: Vercel
 - **Backend**: Render/Railway
-- **Database**: MySQL (cloud instance)
+- **Database**: Supabase
 
 ## Getting Started
 
@@ -94,6 +94,15 @@ npm run dev
 
 Frontend runs on `http://localhost:5173`
 
+```bash
+.env example
+
+# Backend URL (for CORS)
+VITE_API_URL=
+VITE_SUPABASE_URL=
+VITE_SUPABASE_ANON_KEY=
+```
+
 ### Backend Setup
 
 ```bash
@@ -112,6 +121,17 @@ npm run dev
 ```
 
 Backend runs on `http://localhost:5000`
+
+```bash
+.env example
+
+SUPABASE_URL=
+SUPABASE_ANON_KEY=
+PORT=
+NODE_ENV=
+FRONTEND_URL=
+
+```
 
 ## Project Structure
 
@@ -147,7 +167,6 @@ Orbit_AI/
 ### New Enhancements
 1. **Compare Universities**: Side-by-side comparison with rankings and insights
 2. **Peer Insights**: Anonymized progress benchmarks for motivation
-3. **Export Features**: Export tasks to Google Calendar, PDF, and ICS files
 
 ## Database Schema
 
@@ -170,7 +189,7 @@ See `backend/README.md` for complete API endpoint documentation.
 
 ### Backend (Render/Railway)
 - Connect GitHub repository
-- Add MySQL database instance
+- Add MySQL database instance - Supabase
 - Configure environment variables
 - Set build command: `cd backend && npm install && npm start`
 - Set start command: `cd backend && npm start`
