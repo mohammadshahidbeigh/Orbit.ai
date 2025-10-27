@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { initializeDatabase, createTables } from './config/db.js';
+import { initializeDatabase } from './config/supabase.js';
 import universitiesRoutes from './routes/universities.js';
 import userUniversitiesRoutes from './routes/userUniversities.js';
 import tasksRoutes from './routes/tasks.js';
@@ -48,15 +48,13 @@ app.use((req, res) => {
 // Start server
 const startServer = async () => {
   try {
-    // Initialize database
+    // Initialize Supabase
     await initializeDatabase();
-    
-    // Create tables
-    await createTables();
     
     app.listen(PORT, () => {
       console.log(`Server is running on http://localhost:${PORT}`);
       console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+      console.log(`Using Supabase database`);
     });
   } catch (error) {
     console.error('Failed to start server:', error);

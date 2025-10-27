@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AppProvider } from './context/AppContext';
 import { Dashboard } from './pages/Dashboard';
+import { ManageSchools } from './pages/ManageSchools';
 import './App.css';
 
 // Create a query client
@@ -58,7 +59,7 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Dashboard />} />
-      <Route path="/manage-schools" element={<div className="container mx-auto p-6"><h1 className="text-2xl">Manage Schools - Coming Soon</h1></div>} />
+      <Route path="/manage-schools" element={<ManageSchools />} />
       <Route path="/task-board" element={<div className="container mx-auto p-6"><h1 className="text-2xl">Task Board - Coming Soon</h1></div>} />
       <Route path="/timeline" element={<div className="container mx-auto p-6"><h1 className="text-2xl">Timeline - Coming Soon</h1></div>} />
       <Route path="/compare" element={<div className="container mx-auto p-6"><h1 className="text-2xl">Compare Universities - Coming Soon</h1></div>} />

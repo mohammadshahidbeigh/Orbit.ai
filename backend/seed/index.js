@@ -1,4 +1,4 @@
-import { initializeDatabase, createTables, getPool } from '../config/db.js';
+import { initializeDatabase, createTables, supabase } from '../config/supabase.js';
 
 const universities = [
   { name: 'Massachusetts Institute of Technology', country: 'United States', world_ranking: 1, website: 'https://web.mit.edu' },
@@ -68,46 +68,79 @@ const peerStatsData = [
 
 const seedDatabase = async () => {
   try {
-    console.log('Initializing database...');
+    console.log('Initializing Supabase connection...');
     await initializeDatabase();
     
     console.log('Creating tables...');
-    await createTables();
+    const sql = await createTables();
+    console.log('\n⚠️  IMPORTANT: Please run the SQL in Supabase Dashboard');
+    console.log('Go to: Supabase Project → SQL Editor → New Query');
+    console.log('\nSQL to run:');
+    console.log('='.repeat(50));
+    console.log(sql);
+    console.log('='.repeat(50));
     
-    const pool = getPool();
-    const connection = await pool.getConnection();
+    // Clear existing data
+    console.log('\nClearing existing data...');
+    await supabase.from('peer_stats').delete().neq('id', 0);
+    await supabase.from('tasks').delete().neq('id', 0);
+    await supabase.from('user_universities').delete().neq('id', 0);
+    await supabase.from('universities').delete().neq('id', 0);
     
-    try {
-      // Clear existing data
-      console.log('Clearing existing data...');
-      await connection.query('DELETE FROM peer_stats');
-      await connection.query('DELETE FROM tasks');
-      await connection.query('DELETE FROM user_universities');
-      await connection.query('DELETE FROM universities');
-      
-      // Insert universities
-      console.log('Inserting universities...');
-      for (const uni of universities) {
-        await connection.query(
-          'INSERT INTO universities (name, country, world_ranking, website) VALUES (?, ?, ?, ?)',
-          [uni.name, uni.country, uni.world_ranking, uni.website]
-        );
-      }
-      
-      // Insert peer stats
-      console.log('Inserting peer stats...');
-      for (const stats of peerStatsData) {
-        await connection.query(
-          'INSERT INTO peer_stats (university_id, avg_progress_percentage, avg_tasks_completed, avg_days_before_deadline, sample_size) VALUES (?, ?, ?, ?, ?)',
-          [stats.university_id, stats.avg_progress, stats.avg_tasks, stats.avg_days, stats.sample_size]
-        );
-      }
-      
-      console.log('Database seeded successfully!');
-      console.log(`Inserted ${universities.length} universities and ${peerStatsData.length} peer stats records.`);
-    } finally {
-      connection.release();
+    // Insert universities
+    console.log('Inserting universities...');
+    const { data: insertedUniversities, error: uniError } = await supabase
+      .from('universities')
+      .insert(universities)
+      .select();
+    
+    if (uniError) {
+      console.error('Error inserting universities:', uniError);
+      throw uniError;
     }
+    
+    console.log(`✓ Inserted ${insertedUniversities?.length || 0} universities`);
+    
+    // Map peer stats to actual university IDs
+    console.log('Mapping peer stats to inserted universities...');
+    // Sort inserted universities by ranking to match peer stats
+    const sortedUniversities = [...insertedUniversities].sort((a, b) => 
+      (a.world_ranking || 999) - (b.world_ranking || 999)
+    );
+    
+    // Map peer stats data to use actual university IDs
+    const peerStatsFormatted = peerStatsData.map((stat, index) => {
+      const university = sortedUniversities[index];
+      if (!university) {
+        console.warn(`No university found for peer stat index ${index}`);
+        return null;
+      }
+      return {
+        university_id: university.id,
+        avg_progress_percentage: stat.avg_progress,
+        avg_tasks_completed: stat.avg_tasks,
+        avg_days_before_deadline: stat.avg_days,
+        sample_size: stat.sample_size,
+      };
+    }).filter(Boolean);
+    
+    // Insert peer stats
+    console.log('Inserting peer stats...');
+    if (peerStatsFormatted.length === 0) {
+      console.log('⚠️  No peer stats to insert');
+    } else {
+      const { error: statsError } = await supabase
+        .from('peer_stats')
+        .insert(peerStatsFormatted);
+      
+      if (statsError) {
+        console.error('Error inserting peer stats:', statsError);
+        throw statsError;
+      }
+      
+      console.log(`✓ Inserted ${peerStatsFormatted.length} peer stats records`);
+    }
+    console.log('\n✅ Database seeded successfully!');
   } catch (error) {
     console.error('Error seeding database:', error);
     throw error;
