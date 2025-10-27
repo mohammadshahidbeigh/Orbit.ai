@@ -43,7 +43,7 @@ function Navigation() {
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="text-xl font-bold text-primary">
-            Orbit AI - Application Planner
+            Orbit AI
           </Link>
           <div className="flex items-center gap-4">
             <div className="flex gap-1">
