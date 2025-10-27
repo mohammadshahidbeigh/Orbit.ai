@@ -67,7 +67,7 @@ export function Orbit() {
             </span>
           </h1>
           <p className="text-gray-600 text-lg max-w-3xl mx-auto">
-            Master your college applications with AI-powered matching, peer benchmarks, and intelligent planning. 
+            Master your college applications with advanced algorithm matching, peer benchmarks, and intelligent planning. 
             Compare schools side-by-side, track your progress against other applicants, and never miss a deadline.
           </p>
         </div>
