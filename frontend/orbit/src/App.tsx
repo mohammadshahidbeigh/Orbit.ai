@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AppProvider } from './context/AppContext';
 import { AuthProvider, ProtectedRoute, useAuth } from './context/AuthContext';
-import { Dashboard } from './pages/Dashboard';
+import { Orbit } from './pages/Orbit';
 import { ManageSchools } from './pages/ManageSchools';
 import { Login } from './pages/Login';
 import { Recommendations } from './pages/Recommendations';
@@ -32,7 +32,7 @@ function Navigation() {
   }
   
   const navItems = [
-    { path: '/', label: 'Dashboard', icon: '📊' },
+    { path: '/', label: 'Orbit', icon: '📊' },
     { path: '/manage-schools', label: 'Manage Schools', icon: '🏫' },
     { path: '/compare', label: 'Compare', icon: '⚖️' },
     { path: '/peer-insights', label: 'Peer Insights', icon: '👥' },
@@ -88,7 +88,7 @@ function AppRoutes() {
         path="/"
         element={
           <ProtectedRoute>
-            <Dashboard />
+            <Orbit />
           </ProtectedRoute>
         }
       />
