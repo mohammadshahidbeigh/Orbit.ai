@@ -18,15 +18,38 @@ An enhanced version of Orbit AI's Application Planner with intelligent universit
 
 ## Enhancements Made
 
-### 1. University Comparison Tool (NEW)
+### 1. Intelligent University Matching Algorithm (NEW)
+- **Algorithm**: Weighted Sum Model (WSM) + Softmax Probability Transformation
+- **Purpose**: Matches students to universities based on profile compatibility
+- **How It Works**:
+  1. **Input**: Student assessment (GMAT, GPA, work experience, preferences, budget, location)
+  2. **Process**:
+     - Evaluates all universities in database against 9 criteria
+     - Calculates similarity scores for each criterion (GMAT match, GPA compatibility, work experience fit, program alignment, university ranking, acceptance probability, cost fit, scholarship opportunities, location preference)
+     - Applies user-defined weights to each criterion (default: GMAT 25%, GPA 20%, Program 15%, Work 10%, Rank 10%, Acceptance 5%, Cost 5%, Scholarship 5%, Location 5%)
+     - Computes weighted sum score for each university
+     - Converts scores to probabilities using Softmax with temperature parameter (0.1 for sharp distribution)
+  3. **Output**: Top 5 university recommendations ranked by match score with detailed breakdown
+
+- **Key Features**:
+  - **Explainable AI**: Shows why each university was recommended with criterion-by-criterion breakdown
+  - **Dynamic Weighting**: Users can adjust priority weights to personalize results
+  - **Normalization**: All metrics scaled to [0,1] for fair comparison
+  - **Probability Scoring**: Uses Softmax to convert raw scores into admission probability estimates
+  - **Robust Handling**: Gracefully handles missing data with default values
+
+- **Value**: Provides data-driven, personalized university recommendations based on proven multi-criteria decision-making techniques used by major tech companies
+
+### 2. University Comparison Tool (NEW)
 - **Feature**: Side-by-side comparison of selected universities
-- **Columns**: Name, World Ranking, Application Deadline, Program Type, Tasks Remaining, Days Left
-- **Sorting**: By ranking, deadline, tasks remaining, or program type
+- **Columns**: Name, World Ranking, Application Deadline, Program Type, Tasks Remaining, Days Left, Assessment Score
+- **Sorting**: By ranking, deadline, tasks remaining, assessment score, or program type
 - **Visual Indicators**: Color-coded urgency (red for urgent <7 days, yellow for <14 days)
 - **Task Breakdown**: Show tasks by phase (Research, Essays, Recommendations, etc.)
-- **Value**: Helps students make data-driven decisions by comparing workload and priorities
+- **Assessment Integration**: Displays user's fit score for each university
+- **Value**: Helps students make data-driven decisions by comparing workload and priorities with their profile
 
-### 2. Peer Comparison Insights (NEW)
+### 3. Peer Comparison Insights (NEW)
 - **Feature**: Anonymized progress benchmarks from fellow applicants
 - **Metrics Displayed**:
   - Average progress percentage per university
@@ -37,7 +60,7 @@ An enhanced version of Orbit AI's Application Planner with intelligent universit
 - **Integration**: Embedded in comparison view and individual university cards
 - **Value**: Provides motivation and realistic expectations for students
 
-### 3. Enhanced UI/UX
+### 4. Enhanced UI/UX
 - **Modern Design**: Clean, professional interface with Tailwind CSS
 - **Responsive**: Mobile, tablet, and desktop support
 - **Loading States**: Skeleton loaders and spinners
@@ -67,8 +90,13 @@ An enhanced version of Orbit AI's Application Planner with intelligent universit
 ### Backend
 - **Runtime**: Node.js 18+
 - **Framework**: Express.js
-- **Database**: MySQL
+- **Database**: Supabase (PostgreSQL)
 - **Architecture**: RESTful API with proper separation of concerns
+- **Algorithms Implemented**:
+  - **Weighted Sum Model (WSM)**: Multi-criteria decision-making algorithm for university matching
+  - **Softmax Transformation**: Converts raw match scores to probability distributions
+  - **Similarity Metrics**: Custom scoring functions for 9 evaluation criteria
+  - **Dynamic Weighting**: User-customizable priority weights with automatic normalization
 - **Deployment**: Render/Railway ready
 
 ### Deployment
@@ -170,10 +198,20 @@ Orbit_AI/
 
 ## Database Schema
 
-- `universities`: 30 top-ranked universities with rankings, country, website
+### Core Tables
+- `universities`: 30 top-ranked universities with enhanced fields (avg_gmat_score, avg_gpa, acceptance_rate, scholarship_rate, etc.)
 - `user_universities`: User's selected schools with deadlines and program types
 - `tasks`: Application tasks organized by 7 phases
 - `peer_stats`: Aggregated peer progress data for insights
+
+### Assessment System Tables
+- `user_assessments`: Stores student assessment data (GMAT, GPA, work experience, preferences, weights)
+- `university_recommendations`: Caches recommendation results with match scores, probabilities, and breakdowns
+
+### Key Design Decisions
+- **Enhanced University Schema**: Added fields needed for matching algorithm (GMAT ranges, acceptance rates, costs)
+- **Assessment Caching**: Recommendations are stored to avoid re-computation
+- **Breakdown Storage**: Detailed criterion scores stored as JSONB for explainability
 
 ## API Documentation
 
@@ -194,14 +232,73 @@ See `backend/README.md` for complete API endpoint documentation.
 - Set build command: `cd backend && npm install && npm start`
 - Set start command: `cd backend && npm start`
 
+## Technical Implementation
+
+### Matching Algorithm Details
+
+The university matching system uses industry-standard algorithms for multi-criteria decision-making:
+
+#### 1. Weighted Sum Model (WSM)
+The WSM computes a final score for each university by:
+
+```
+Score = Σ(weight_i × metric_i) / Σ(weight_i)
+```
+
+Where:
+- `weight_i` is the user-defined priority for criterion `i`
+- `metric_i` is the similarity score (0-1) for criterion `i`
+- The denominator normalizes the score to [0,1]
+
+#### 2. Similarity Metrics
+Each criterion uses a specialized similarity function:
+
+- **GMAT/GPA Match**: `1 - |student_score - university_avg| / max_range`
+- **Program Alignment**: Binary match for exact program type + field
+- **Work Experience**: Ratio of student years to university preferred years (capped at 1.0)
+- **Ranking Score**: `(max_rank - university_rank) / (max_rank - 1)`
+- **Cost Fit**: `1 - max(0, tuition - budget) / max_tuition`
+- **Location**: Binary for exact country match, 0.7 for region match, 0.3 otherwise
+
+#### 3. Softmax Probability
+Converts raw scores into probability distribution:
+
+```
+P(i) = exp(score_i / temperature) / Σ exp(score_j / temperature)
+```
+
+Temperature parameter (0.1) creates sharp distribution, highlighting top matches.
+
+#### 4. Explainability
+For each recommendation, the system shows:
+- Top 3 contributing factors (criteria × weights)
+- Percentage contribution of each factor
+- Overall match score and admission probability
+
+### Architecture Decisions
+
+**Why WSM + Softmax over Machine Learning?**
+1. **Interpretability**: Users can see exactly why a university was recommended
+2. **Control**: Customizable weights give users agency over recommendations
+3. **Speed**: O(n) computation vs. ML training overhead
+4. **Transparency**: No black box - each score is explainable
+
+**Why Supabase over pure MySQL?**
+1. **Built-in Auth**: Supabase Auth handles user authentication
+2. **Real-time**: Automatic updates via Supabase Realtime
+3. **Row Level Security**: Data isolation per user
+4. **Managed Service**: Less DevOps overhead
+
 ## Improvements Over Original
 
-1. **University rankings** in comparison view (world rankings)
-2. **Peer insights** to show how other applicants are progressing
-3. **Better UX** with loading states, error handling, and form validation
-4. **Export capabilities** for better external integration
-5. **Responsive design** for mobile users
-6. **Cleaner, modern UI** with Tailwind CSS
+1. **Intelligent matching algorithm** using WSM + Softmax for personalized recommendations
+2. **University rankings** in comparison view (world rankings)
+3. **Peer insights** to show how other applicants are progressing
+4. **Better UX** with loading states, error handling, and form validation
+5. **Export capabilities** for better external integration
+6. **Responsive design** for mobile users
+7. **Cleaner, modern UI** with Tailwind CSS
+8. **Explainable AI** with detailed criterion breakdowns
 
 ## Demo Data
 
