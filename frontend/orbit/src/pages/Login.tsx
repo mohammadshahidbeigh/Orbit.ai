@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { supabase } from '@/lib/supabase';
@@ -29,6 +30,10 @@ export function Login() {
         if (error) throw error;
 
         if (data.user) {
+          toast.success('Welcome back! Login successful.', {
+            position: 'top-right',
+            autoClose: 2000,
+          });
           navigate('/');
         }
       } else {
@@ -48,14 +53,26 @@ export function Login() {
         if (data.user) {
           // Check if email confirmation is required
           if (data.session) {
+            toast.success('Account created successfully! Welcome to Orbit AI.', {
+              position: 'top-right',
+              autoClose: 3000,
+            });
             navigate('/');
           } else {
-            alert('Please check your email for a confirmation link!');
+            toast.info('Please check your email for a confirmation link!', {
+              position: 'top-right',
+              autoClose: 5000,
+            });
           }
         }
       }
     } catch (err: any) {
-      setError(err.message || 'An error occurred');
+      const errorMessage = err.message || 'An error occurred';
+      setError(errorMessage);
+      toast.error(errorMessage, {
+        position: 'top-right',
+        autoClose: 4000,
+      });
     } finally {
       setLoading(false);
     }
