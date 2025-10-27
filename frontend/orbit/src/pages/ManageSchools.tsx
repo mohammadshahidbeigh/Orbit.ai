@@ -2,12 +2,15 @@ import { useQuery } from '@tanstack/react-query';
 import { universitiesAPI, userUniversitiesAPI } from '@/lib/api';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import { Search, Plus, GraduationCap } from 'lucide-react';
+import { Search, Plus, GraduationCap, Sparkles } from 'lucide-react';
 import { useState } from 'react';
+import { Assessment } from './Assessment';
 
 export function ManageSchools() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedProgram, setSelectedProgram] = useState<string>('All');
+  const [showAssessment, setShowAssessment] = useState(false);
+  const [selectedUniversity, setSelectedUniversity] = useState<any>(null);
 
   // Fetch all universities
   const { data: universities, isLoading: isLoadingUniversities } = useQuery({
@@ -27,7 +30,7 @@ export function ManageSchools() {
     },
   });
 
-  const filteredUniversities = universities?.filter((uni: any) => {
+  const filteredUniversities = universities?.filter(() => {
     if (selectedProgram === 'All') return true;
     return true; // Will add filtering logic later
   });
@@ -51,11 +54,93 @@ export function ManageSchools() {
     );
   }
 
+  const handleAddToList = (university: any) => {
+    setSelectedUniversity(university);
+    setShowAssessment(true);
+  };
+
+  const generateRandomDeadline = () => {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    
+    // Generate realistic application deadlines
+    // Most deadlines are in late fall/early winter for next year's admission
+    const deadlines = [
+      // Fall 2025 deadlines (current year + 1)
+      `${currentYear + 1}-10-15`, // October 15
+      `${currentYear + 1}-11-01`, // November 1
+      `${currentYear + 1}-11-15`, // November 15
+      `${currentYear + 1}-11-27`, // November 27 (like your example)
+      `${currentYear + 1}-12-01`, // December 1
+      `${currentYear + 1}-12-06`, // December 6 (like your example)
+      `${currentYear + 1}-12-15`, // December 15
+      `${currentYear + 1}-12-31`, // December 31
+      
+      // Fall 2026 deadlines (current year + 2)
+      `${currentYear + 2}-01-05`, // January 5
+      `${currentYear + 2}-01-15`, // January 15
+      `${currentYear + 2}-01-25`, // January 25
+      `${currentYear + 2}-02-01`, // February 1
+      `${currentYear + 2}-02-15`, // February 15
+      `${currentYear + 2}-03-01`, // March 1
+      `${currentYear + 2}-03-15`, // March 15
+      `${currentYear + 2}-04-01`, // April 1
+    ];
+    
+    // Randomly select one of the realistic deadlines
+    const randomIndex = Math.floor(Math.random() * deadlines.length);
+    return deadlines[randomIndex];
+  };
+
+  const handleAssessmentComplete = async (assessmentData: any) => {
+    try {
+      // Add university to user's list with assessment data
+      await userUniversitiesAPI.add({
+        university_id: selectedUniversity.id,
+        program_type: assessmentData.program_type,
+        application_deadline: generateRandomDeadline(),
+        assessment_data: assessmentData
+      });
+      
+      // Reset state
+      setShowAssessment(false);
+      setSelectedUniversity(null);
+      
+      // Refresh the user universities query
+      window.location.reload(); // Simple refresh for now
+    } catch (error) {
+      console.error('Error adding university:', error);
+    }
+  };
+
+  // Show assessment if requested
+  if (showAssessment) {
+    return (
+      <Assessment 
+        onClose={() => {
+          setShowAssessment(false);
+          setSelectedUniversity(null);
+        }}
+        selectedUniversity={selectedUniversity}
+        onComplete={handleAssessmentComplete}
+      />
+    );
+  }
+
   return (
     <div className="container mx-auto p-6 space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Manage Schools</h1>
-        <p className="text-muted-foreground">Search and add universities to track</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Manage Schools</h1>
+          <p className="text-muted-foreground">Search and add universities to track</p>
+        </div>
+        <Button 
+          onClick={() => setShowAssessment(true)}
+          className="bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700"
+        >
+          <Sparkles className="h-4 w-4 mr-2" />
+          Find Your Best Fit
+        </Button>
       </div>
 
       {/* Search and Filter Bar */}
@@ -174,7 +259,11 @@ export function ManageSchools() {
                       )}
                     </p>
                     {!isSelected && (
-                      <Button className="w-full" variant="outline">
+                      <Button 
+                        className="w-full" 
+                        variant="outline"
+                        onClick={() => handleAddToList(uni)}
+                      >
                         <Plus className="h-4 w-4 mr-2" />
                         Add to List
                       </Button>

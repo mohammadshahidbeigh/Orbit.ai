@@ -33,6 +33,7 @@ export const userUniversitiesAPI = {
   add: (data: any) => api.post('/api/user-universities', data),
   update: (id: number, data: any) => api.put(`/api/user-universities/${id}`, data),
   delete: (id: number) => api.delete(`/api/user-universities/${id}`),
+  getComparisonData: () => api.get('/api/user-universities/compare'),
 };
 
 export const tasksAPI = {
@@ -46,5 +47,12 @@ export const tasksAPI = {
 
 export const dashboardAPI = {
   getStats: () => api.get('/api/dashboard/stats'),
+};
+
+export const assessmentAPI = {
+  submitAssessment: (data: any) => api.post('/api/assessments/assess', data),
+  getAssessmentHistory: () => api.get('/api/assessments/history'),
+  getRecommendations: (assessmentId: string) => api.get(`/api/assessments/recommendations/${assessmentId}`),
+  updateWeights: (assessmentId: string, weights: any) => api.put(`/api/assessments/${assessmentId}/weights`, { weights }),
 };
 

@@ -5,6 +5,10 @@ import { AuthProvider, ProtectedRoute, useAuth } from './context/AuthContext';
 import { Dashboard } from './pages/Dashboard';
 import { ManageSchools } from './pages/ManageSchools';
 import { Login } from './pages/Login';
+import { Recommendations } from './pages/Recommendations';
+// import { TaskBoard } from './pages/TaskBoard';
+// import { Timeline } from './pages/Timeline';
+import { CompareUniversities } from './pages/CompareUniversities';
 import './App.css';
 
 // Create a query client
@@ -29,8 +33,6 @@ function Navigation() {
   const navItems = [
     { path: '/', label: 'Dashboard', icon: '📊' },
     { path: '/manage-schools', label: 'Manage Schools', icon: '🏫' },
-    { path: '/task-board', label: 'Task Board', icon: '📋' },
-    { path: '/timeline', label: 'Timeline', icon: '📅' },
     { path: '/compare', label: 'Compare', icon: '⚖️' },
   ];
 
@@ -89,6 +91,14 @@ function AppRoutes() {
         }
       />
       <Route
+        path="/recommendations"
+        element={
+          <ProtectedRoute>
+            <Recommendations />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/manage-schools"
         element={
           <ProtectedRoute>
@@ -96,11 +106,11 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
-      <Route
+      {/* <Route
         path="/task-board"
         element={
           <ProtectedRoute>
-            <div className="container mx-auto p-6"><h1 className="text-2xl">Task Board - Coming Soon</h1></div>
+            <TaskBoard />
           </ProtectedRoute>
         }
       />
@@ -108,15 +118,15 @@ function AppRoutes() {
         path="/timeline"
         element={
           <ProtectedRoute>
-            <div className="container mx-auto p-6"><h1 className="text-2xl">Timeline - Coming Soon</h1></div>
+            <Timeline />
           </ProtectedRoute>
         }
-      />
+      /> */}
       <Route
         path="/compare"
         element={
           <ProtectedRoute>
-            <div className="container mx-auto p-6"><h1 className="text-2xl">Compare Universities - Coming Soon</h1></div>
+            <CompareUniversities />
           </ProtectedRoute>
         }
       />
