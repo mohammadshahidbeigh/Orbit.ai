@@ -4,7 +4,6 @@ import dotenv from 'dotenv';
 import { initializeDatabase } from './config/supabase.js';
 import universitiesRoutes from './routes/universities.js';
 import userUniversitiesRoutes from './routes/userUniversities.js';
-import tasksRoutes from './routes/tasks.js';
 import dashboardRoutes from './routes/dashboard.js';
 import assessmentsRoutes from './routes/assessments.js';
 
@@ -29,7 +28,6 @@ app.get('/health', (req, res) => {
 // API Routes
 app.use('/api/universities', universitiesRoutes);
 app.use('/api/user-universities', userUniversitiesRoutes);
-app.use('/api/tasks', tasksRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/assessments', assessmentsRoutes);
 
