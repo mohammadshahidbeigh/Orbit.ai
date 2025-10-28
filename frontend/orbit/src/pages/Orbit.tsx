@@ -166,7 +166,7 @@ export function Orbit() {
                   <span className="font-semibold text-gray-800">Get Matched</span>
                 </div>
                 <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded font-semibold">
-                  AI-Powered
+                  Algorithm Matching
                 </span>
               </div>
               <p className="text-sm text-gray-600 mb-4">
