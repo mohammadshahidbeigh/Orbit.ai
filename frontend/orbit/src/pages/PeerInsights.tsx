@@ -196,13 +196,13 @@ export function PeerInsights() {
 
   if (isLoadingUser) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8">
+      <div className="min-h-screen bg-background py-8">
         <div className="max-w-7xl mx-auto px-4">
           <div className="animate-pulse">
-            <div className="h-8 bg-gray-200 rounded w-1/3 mb-6"></div>
+            <div className="h-8 bg-muted rounded w-1/3 mb-6"></div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[...Array(6)].map((_, i) => (
-                <div key={i} className="bg-gray-200 rounded-lg h-64"></div>
+                <div key={i} className="bg-muted rounded-lg h-64"></div>
               ))}
             </div>
           </div>
@@ -212,89 +212,89 @@ export function PeerInsights() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-background py-8">
       <div className="max-w-7xl mx-auto px-4">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-3 flex-wrap">
             <Users className="h-8 w-8 text-blue-600" />
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Peer Comparison Insights</h1>
+            <h1 className="text-2xl md:text-3xl font-bold">Peer Comparison Insights</h1>
           </div>
-          <p className="text-gray-600 text-base md:text-lg">
+          <p className="text-muted-foreground text-base md:text-lg">
             Discover how fellow applicants are progressing with their university applications. 
             Get motivated with anonymized benchmarks and realistic expectations.
           </p>
         </div>
 
         {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-lg shadow-sm p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 bg">
+          <div className="bg-card text-card-foreground border rounded-lg shadow-sm p-6">
             <div className="flex items-center gap-2 mb-2">
               <BarChart3 className="h-5 w-5 text-blue-500" />
-              <h3 className="font-medium text-gray-900">Universities Tracked</h3>
+              <h3 className="font-medium">Universities Tracked</h3>
             </div>
             <div className="text-2xl font-bold text-blue-600">
               {summaryStats.universitiesWithData}/{summaryStats.totalUniversities}
             </div>
-            <p className="text-sm text-gray-600">with peer data</p>
+            <p className="text-sm text-muted-foreground">with peer data</p>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm p-6">
+          <div className="bg-card text-card-foreground border rounded-lg shadow-sm p-6">
             <div className="flex items-center gap-2 mb-2">
               <Users className="h-5 w-5 text-green-500" />
-              <h3 className="font-medium text-gray-900">Total Students</h3>
+              <h3 className="font-medium">Total Students</h3>
             </div>
             <div className="text-2xl font-bold text-green-600">
               {summaryStats.totalSampleSize.toLocaleString()}
             </div>
-            <p className="text-sm text-gray-600">in sample data</p>
+            <p className="text-sm text-muted-foreground">in sample data</p>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm p-6">
+          <div className="bg-card text-card-foreground border rounded-lg shadow-sm p-6">
             <div className="flex items-center gap-2 mb-2">
               <TrendingUp className="h-5 w-5 text-orange-500" />
-              <h3 className="font-medium text-gray-900">Avg Progress</h3>
+              <h3 className="font-medium">Avg Progress</h3>
             </div>
             <div className="text-2xl font-bold text-orange-600">
               {summaryStats.avgProgress}%
             </div>
-            <p className="text-sm text-gray-600">across all peers</p>
+            <p className="text-sm text-muted-foreground">across all peers</p>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm p-6">
+          <div className="bg-card text-card-foreground border rounded-lg shadow-sm p-6">
             <div className="flex items-center gap-2 mb-2">
               <RefreshCw className="h-5 w-5 text-purple-500" />
-              <h3 className="font-medium text-gray-900">Avg Tasks</h3>
+              <h3 className="font-medium">Avg Tasks</h3>
             </div>
             <div className="text-2xl font-bold text-purple-600">
               {summaryStats.avgTasks}
             </div>
-            <p className="text-sm text-gray-600">completed per student</p>
+            <p className="text-sm text-muted-foreground">completed per student</p>
           </div>
         </div>
 
         {/* Controls */}
-        <div className="bg-white rounded-lg shadow-sm p-4 md:p-6 mb-8">
+        <div className="bg-card text-card-foreground border rounded-lg shadow-sm p-4 md:p-6 mb-8">
           {/* Mobile controls header */}
           <div className="flex items-center justify-between md:hidden">
             <button
               onClick={() => setShowMobileControls(!showMobileControls)}
-              className="inline-flex items-center gap-2 px-3 py-2 text-sm rounded-md border hover:bg-gray-50"
+              className="inline-flex items-center gap-2 px-3 py-2 text-sm rounded-md border hover:bg-muted/50"
             >
-              <Filter className="h-4 w-4 text-gray-500" />
+              <Filter className="h-4 w-4 text-muted-foreground" />
               Filters & Sort
             </button>
-            <div className="flex bg-gray-100 rounded-md p-1">
+            <div className="flex bg-muted rounded-md p-1">
               <button
                 onClick={() => setViewMode('grid')}
-                className={`px-3 py-1 text-sm rounded ${viewMode === 'grid' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600'}`}
+                className={`px-3 py-1 text-sm rounded ${viewMode === 'grid' ? 'bg-background text-blue-600 shadow-sm' : 'text-muted-foreground'}`}
                 aria-label="Grid view"
               >
                 Grid
               </button>
               <button
                 onClick={() => setViewMode('detailed')}
-                className={`px-3 py-1 text-sm rounded ${viewMode === 'detailed' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600'}`}
+                className={`px-3 py-1 text-sm rounded ${viewMode === 'detailed' ? 'bg-background text-blue-600 shadow-sm' : 'text-muted-foreground'}`}
                 aria-label="Detailed view"
               >
                 Detail
@@ -306,11 +306,11 @@ export function PeerInsights() {
           {showMobileControls && (
             <div className="md:hidden mt-4 space-y-4">
               <div className="flex items-center gap-2">
-                <label className="text-sm font-medium text-gray-700">Filter:</label>
+                <label className="text-sm font-medium">Filter:</label>
                 <select
                   value={selectedFilter}
                   onChange={(e) => setSelectedFilter(e.target.value)}
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="flex-1 px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-background text-foreground border-border"
                 >
                   {FILTER_OPTIONS.map(option => (
                     <option key={option.value} value={option.value}>
@@ -320,11 +320,11 @@ export function PeerInsights() {
                 </select>
               </div>
               <div className="flex items-center gap-2">
-                <label className="text-sm font-medium text-gray-700">Sort by:</label>
+                <label className="text-sm font-medium">Sort by:</label>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="flex-1 px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-background text-foreground border-border"
                 >
                   {SORT_OPTIONS.map(option => (
                     <option key={option.value} value={option.value}>
@@ -360,12 +360,12 @@ export function PeerInsights() {
           <div className="hidden md:flex flex-wrap gap-4 items-center justify-between">
             <div className="flex flex-wrap gap-4 items-center">
               <div className="flex items-center gap-2">
-                <Filter className="h-4 w-4 text-gray-500" />
-                <label className="text-sm font-medium text-gray-700">Filter:</label>
+                <Filter className="h-4 w-4 text-muted-foreground" />
+                <label className="text-sm font-medium">Filter:</label>
                 <select
                   value={selectedFilter}
                   onChange={(e) => setSelectedFilter(e.target.value)}
-                  className="px-3 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="px-3 py-1 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-background text-foreground border-border"
                 >
                   {FILTER_OPTIONS.map(option => (
                     <option key={option.value} value={option.value}>
@@ -375,11 +375,11 @@ export function PeerInsights() {
                 </select>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-gray-700">Sort by:</span>
+                <span className="text-sm font-medium">Sort by:</span>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="px-3 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="px-3 py-1 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-background text-foreground border-border"
                 >
                   {SORT_OPTIONS.map(option => (
                     <option key={option.value} value={option.value}>
@@ -391,16 +391,16 @@ export function PeerInsights() {
             </div>
 
             <div className="flex gap-2 items-center">
-              <div className="flex bg-gray-100 rounded-md p-1">
+              <div className="flex bg-muted rounded-md p-1">
                 <button
                   onClick={() => setViewMode('grid')}
-                  className={`px-3 py-1 text-sm rounded ${viewMode === 'grid' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600'}`}
+                  className={`px-3 py-1 text-sm rounded ${viewMode === 'grid' ? 'bg-background text-blue-600 shadow-sm' : 'text-muted-foreground'}`}
                 >
                   Grid View
                 </button>
                 <button
                   onClick={() => setViewMode('detailed')}
-                  className={`px-3 py-1 text-sm rounded ${viewMode === 'detailed' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600'}`}
+                  className={`px-3 py-1 text-sm rounded ${viewMode === 'detailed' ? 'bg-background text-blue-600 shadow-sm' : 'text-muted-foreground'}`}
                 >
                   Detailed View
                 </button>
@@ -432,10 +432,10 @@ export function PeerInsights() {
 
         {/* Results */}
         {sortedUniversities.length === 0 ? (
-          <div className="bg-white rounded-lg shadow-sm p-12 text-center">
-            <div className="text-gray-400 text-6xl mb-4">📊</div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No Universities Found</h3>
-            <p className="text-gray-600 mb-4">
+          <div className="bg-card text-card-foreground border rounded-lg shadow-sm p-12 text-center">
+            <div className="text-muted-foreground text-6xl mb-4">📊</div>
+            <h3 className="text-lg font-medium mb-2">No Universities Found</h3>
+            <p className="text-muted-foreground mb-4">
               {selectedFilter === 'active' 
                 ? 'You don\'t have any active university applications yet.'
                 : 'No universities match your current filter criteria.'
@@ -472,23 +472,23 @@ export function PeerInsights() {
             ) : (
               <div className="space-y-6">
                 {sortedUniversities.map((university) => (
-                  <div key={university.id} className="bg-white rounded-lg shadow-sm border overflow-hidden">
-                    <div className="bg-gray-50 px-6 py-4 border-b">
+                  <div key={university.id} className="bg-card text-card-foreground border rounded-lg shadow-sm overflow-hidden">
+                    <div className="bg-muted px-6 py-4 border-b">
                       <div className="flex items-center justify-between">
                         <div>
-                          <h3 className="text-lg font-semibold text-gray-900">{university.name}</h3>
-                          <p className="text-sm text-gray-600">
+                          <h3 className="text-lg font-semibold">{university.name}</h3>
+                          <p className="text-sm text-muted-foreground">
                             {university.country} • {university.program_type}
                             {university.world_ranking && (
-                              <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                              <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary text-secondary-foreground">
                                 #{university.world_ranking}
                               </span>
                             )}
                           </p>
                         </div>
                         <div className="text-right">
-                          <div className="text-sm text-gray-500">Deadline</div>
-                          <div className="text-sm font-medium text-gray-900">
+                          <div className="text-sm text-muted-foreground">Deadline</div>
+                          <div className="text-sm font-medium">
                             {new Date(university.application_deadline).toLocaleDateString()}
                           </div>
                         </div>
@@ -513,8 +513,8 @@ export function PeerInsights() {
 
         {/* Loading overlay for stats calculation */}
         {isLoadingStats && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 flex items-center gap-3">
+          <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+            <div className="bg-card text-card-foreground border rounded-lg p-6 flex items-center gap-3">
               <RefreshCw className="h-5 w-5 animate-spin text-blue-600" />
               <span>Loading peer statistics...</span>
             </div>

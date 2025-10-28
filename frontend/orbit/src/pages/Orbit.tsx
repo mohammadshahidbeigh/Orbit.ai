@@ -46,11 +46,11 @@ export function Orbit() {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto p-6 space-y-8">
         {/* Header */}
         <div className="flex justify-between items-center">
-          <div className="bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm">
+          <div className="bg-secondary text-secondary-foreground px-4 py-2 rounded-full text-sm">
             Your Smart Application Assistant
           </div>
         </div>
@@ -66,7 +66,7 @@ export function Orbit() {
               College Applications
             </span>
           </h1>
-          <p className="text-gray-600 text-lg max-w-3xl mx-auto">
+          <p className="text-muted-foreground text-lg max-w-3xl mx-auto">
             Master your college applications with advanced algorithm matching, peer benchmarks, and intelligent planning. 
             Compare schools side-by-side, track your progress against other applicants, and never miss a deadline.
           </p>
@@ -85,13 +85,13 @@ export function Orbit() {
                   <div className="bg-blue-100 p-3 rounded-lg">
                     <School className="w-6 h-6 text-blue-600" />
                   </div>
-                  <span className="font-semibold text-gray-800">Manage Schools</span>
+                  <span className="font-semibold">Manage Schools</span>
                 </div>
                 <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded font-semibold">
                   {stats.totalSchools || 0}
                 </span>
               </div>
-              <p className="text-sm text-gray-600 mb-4">
+              <p className="text-sm text-muted-foreground mb-4">
                 Add universities and set application deadlines. Tasks auto-generate for each school.
               </p>
               <div className="flex items-center text-blue-600 text-sm font-medium">
@@ -111,13 +111,13 @@ export function Orbit() {
                   <div className="bg-green-100 p-3 rounded-lg">
                     <GitCompare className="w-6 h-6 text-green-600" />
                   </div>
-                  <span className="font-semibold text-gray-800">Compare</span>
+                  <span className="font-semibold">Compare</span>
                 </div>
                 <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded font-semibold">
                   Universities
                 </span>
               </div>
-              <p className="text-sm text-gray-600 mb-4">
+              <p className="text-sm text-muted-foreground mb-4">
                 Side-by-side comparison of your target schools with rankings, deadlines, and progress.
               </p>
               <div className="flex items-center text-green-600 text-sm font-medium">
@@ -137,13 +137,13 @@ export function Orbit() {
                   <div className="bg-purple-100 p-3 rounded-lg">
                     <Users className="w-6 h-6 text-purple-600" />
                   </div>
-                  <span className="font-semibold text-gray-800">Peer Insights</span>
+                  <span className="font-semibold">Peer Insights</span>
                 </div>
                 <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded font-semibold">
                   Anonymized
                 </span>
               </div>
-              <p className="text-sm text-gray-600 mb-4">
+              <p className="text-sm text-muted-foreground mb-4">
                 See how fellow applicants are progressing and get realistic benchmarks for your applications.
               </p>
               <div className="flex items-center text-purple-600 text-sm font-medium">
@@ -163,13 +163,13 @@ export function Orbit() {
                   <div className="bg-orange-100 p-3 rounded-lg">
                     <Target className="w-6 h-6 text-orange-600" />
                   </div>
-                  <span className="font-semibold text-gray-800">Get Matched</span>
+                  <span className="font-semibold">Get Matched</span>
                 </div>
                 <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded font-semibold">
                   Algorithm Matching
                 </span>
               </div>
-              <p className="text-sm text-gray-600 mb-4">
+              <p className="text-sm text-muted-foreground mb-4">
                 Take an assessment to get personalized university recommendations based on your profile.
               </p>
               <div className="flex items-center text-orange-600 text-sm font-medium">
@@ -180,11 +180,11 @@ export function Orbit() {
         </div>
 
         {/* Application Planner Section */}
-        <div className="bg-white rounded-xl p-8 shadow-sm text-center">
+        <div className="bg-card text-card-foreground border rounded-xl p-8 shadow-sm text-center">
           <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500 mb-4">
             Application Planner
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <p className="text-muted-foreground max-w-2xl mx-auto">
             Your all-in-one platform for managing college applications. Get personalized university matches, 
             compare programs, learn from peer insights, and stay organized with automated task generation.
           </p>

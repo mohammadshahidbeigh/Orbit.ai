@@ -171,11 +171,11 @@ export function CompareUniversities() {
 
   if (isLoadingUser) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8">
+      <div className="min-h-screen bg-background py-8">
         <div className="max-w-7xl mx-auto px-4">
           <div className="animate-pulse">
-            <div className="h-8 bg-gray-200 rounded w-1/4 mb-6"></div>
-            <div className="bg-gray-200 rounded-lg h-96"></div>
+            <div className="h-8 bg-muted rounded w-1/4 mb-6"></div>
+            <div className="bg-muted rounded-lg h-96"></div>
           </div>
         </div>
       </div>
@@ -183,38 +183,38 @@ export function CompareUniversities() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-background py-8">
       <div className="max-w-7xl mx-auto px-4">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">University Comparison</h1>
-          <p className="text-gray-600">Compare up to 5 universities side-by-side with rankings, deadlines, and workload analysis.</p>
+          <h1 className="text-3xl font-bold mb-2">University Comparison</h1>
+          <p className="text-muted-foreground">Compare up to 5 universities side-by-side with rankings, deadlines, and workload analysis.</p>
         </div>
 
         {/* University Selection */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Select Universities to Compare</h3>
+        <div className="bg-card text-card-foreground border rounded-lg shadow-sm p-6 mb-6">
+          <h3 className="text-lg font-semibold mb-4">Select Universities to Compare</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {userUniversities.map((university: University) => (
               <label
                 key={university.id}
                 className={`flex items-center p-4 border rounded-lg cursor-pointer transition-colors ${
                   selectedUniversities.includes(university.id)
-                    ? 'border-blue-500 bg-blue-50'
-                    : 'border-gray-200 hover:border-gray-300'
+                    ? 'border-blue-500/60 bg-blue-500/10'
+                    : 'border-border hover:border-muted'
                 }`}
               >
                 <input
                   type="checkbox"
                   checked={selectedUniversities.includes(university.id)}
                   onChange={() => handleUniversityToggle(university.id)}
-                  className="mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  className="mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-border rounded bg-background"
                   disabled={!selectedUniversities.includes(university.id) && selectedUniversities.length >= 5}
                 />
                 <div className="flex-1 min-w-0">
-                  <h4 className="text-sm font-medium text-gray-900 truncate">
+                  <h4 className="text-sm font-medium truncate">
                     {university.name || university.university_name}
                   </h4>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-muted-foreground">
                     {university.country} • {university.program_type}
                   </p>
                   <div className="flex items-center gap-2 mt-1">
@@ -225,9 +225,9 @@ export function CompareUniversities() {
                     )}
                     {university.assessmentScore && (
                       <span className={`text-xs px-2 py-1 rounded font-medium ${
-                        university.assessmentScore >= 80 ? 'bg-green-100 text-green-800' :
-                        university.assessmentScore >= 60 ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-red-100 text-red-800'
+                        university.assessmentScore >= 80 ? 'bg-green-500/10 text-green-500' :
+                        university.assessmentScore >= 60 ? 'bg-yellow-500/10 text-yellow-500' :
+                        'bg-red-500/10 text-red-500'
                       }`}>
                         {university.assessmentScore.toFixed(1)}% fit
                       </span>
@@ -239,9 +239,9 @@ export function CompareUniversities() {
           </div>
           {userUniversities.length === 0 && (
             <div className="text-center py-8">
-              <div className="text-gray-400 text-6xl mb-4">🏫</div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No universities added yet</h3>
-              <p className="text-gray-600 mb-4">Add universities to your list to start comparing them.</p>
+              <div className="text-muted-foreground text-6xl mb-4">🏫</div>
+              <h3 className="text-lg font-medium mb-2">No universities added yet</h3>
+              <p className="text-muted-foreground mb-4">Add universities to your list to start comparing them.</p>
               <button className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
                 Manage Schools
               </button>
@@ -251,25 +251,25 @@ export function CompareUniversities() {
 
         {/* Comparison Controls */}
         {selectedUniversities.length > 0 && (
-          <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+          <div className="bg-card text-card-foreground border rounded-lg shadow-sm p-6 mb-6">
             <div className="flex flex-wrap gap-4 items-center justify-between">
               <div className="flex items-center gap-4">
-                <span className="text-sm font-medium text-gray-700">
+                <span className="text-sm font-medium">
                   Comparing {selectedUniversities.length} universities
                 </span>
                 <button
                   onClick={() => setSelectedUniversities([])}
-                  className="text-sm text-red-600 hover:text-red-800"
+                  className="text-sm text-red-600 hover:text-red-700"
                 >
                   Clear Selection
                 </button>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-gray-700">Sort by:</span>
+                <span className="text-sm font-medium">Sort by:</span>
                 <select
                   value={sortBy}
                   onChange={(e) => handleSortChange(e.target.value)}
-                  className="px-3 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="px-3 py-1 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-background text-foreground border-border"
                 >
                   {SORT_OPTIONS.map(option => (
                     <option key={option.value} value={option.value}>
@@ -279,7 +279,7 @@ export function CompareUniversities() {
                 </select>
                 <button
                   onClick={() => setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc')}
-                  className="p-1 text-gray-500 hover:text-gray-700"
+                  className="p-1 text-muted-foreground hover:text-foreground"
                   title={`Sort ${sortOrder === 'asc' ? 'Descending' : 'Ascending'}`}
                 >
                   {sortOrder === 'asc' ? '↑' : '↓'}
@@ -291,54 +291,54 @@ export function CompareUniversities() {
 
         {/* Comparison Table */}
         {selectedUniversities.length > 0 && (
-          <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+          <div className="bg-card text-card-foreground border rounded-lg shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-border">
+                <thead className="bg-muted/50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                       University
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                       Ranking
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                       Deadline
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                       Days Left
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                       Tasks Remaining
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                       Assessment Score
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                       Task Breakdown
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                       Actions
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-card divide-y divide-border">
                   {sortedData.map((university) => (
-                    <tr key={university.id} className="hover:bg-gray-50">
+                    <tr key={university.id} className="hover:bg-muted/50">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <div className="flex-shrink-0 h-10 w-10">
-                            <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                            <div className="h-10 w-10 rounded-full bg-blue-500/10 flex items-center justify-center">
                               <span className="text-sm font-medium text-blue-600">
                                 {university.name.charAt(0)}
                               </span>
                             </div>
                           </div>
                           <div className="ml-4">
-                            <div className="text-sm font-medium text-gray-900">
+                            <div className="text-sm font-medium">
                               {university.name}
                             </div>
-                            <div className="text-sm text-gray-500">
+                            <div className="text-sm text-muted-foreground">
                               {university.country} • {university.program_type}
                             </div>
                           </div>
@@ -346,14 +346,14 @@ export function CompareUniversities() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {university.world_ranking ? (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary text-secondary-foreground">
                             #{university.world_ranking}
                           </span>
                         ) : (
-                          <span className="text-sm text-gray-500">N/A</span>
+                          <span className="text-sm text-muted-foreground">N/A</span>
                         )}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm">
                         {new Date(university.application_deadline).toLocaleDateString()}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -361,27 +361,27 @@ export function CompareUniversities() {
                           {university.daysLeft} days
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm">
                         {university.tasksRemaining}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {university.assessmentScore ? (
                           <div className="flex flex-col items-center">
                             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                              university.assessmentScore >= 80 ? 'bg-green-100 text-green-800' :
-                              university.assessmentScore >= 60 ? 'bg-yellow-100 text-yellow-800' :
-                              'bg-red-100 text-red-800'
+                              university.assessmentScore >= 80 ? 'bg-green-500/10 text-green-500' :
+                              university.assessmentScore >= 60 ? 'bg-yellow-500/10 text-yellow-500' :
+                              'bg-red-500/10 text-red-500'
                             }`}>
                               {university.assessmentScore.toFixed(1)}%
                             </span>
                             {university.assessmentBreakdown && (
-                              <div className="mt-1 text-xs text-gray-500">
+                              <div className="mt-1 text-xs text-muted-foreground">
                                 Fit Score
                               </div>
                             )}
                           </div>
                         ) : (
-                          <span className="text-sm text-gray-400">No assessment</span>
+                          <span className="text-sm text-muted-foreground">No assessment</span>
                         )}
                       </td>
                       <td className="px-6 py-4">
@@ -390,7 +390,7 @@ export function CompareUniversities() {
                             count > 0 && (
                               <span
                                 key={phase}
-                                className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-800"
+                                className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-muted text-foreground"
                                 title={`${phase}: ${count} tasks`}
                               >
                                 {phase.split(' ')[0]}: {count}
@@ -400,10 +400,10 @@ export function CompareUniversities() {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <button className="text-blue-600 hover:text-blue-900 mr-3">
+                        <button className="text-blue-600 hover:text-blue-700 mr-3">
                           View Tasks
                         </button>
-                        <button className="text-red-600 hover:text-red-900">
+                        <button className="text-red-600 hover:text-red-700">
                           Remove
                         </button>
                       </td>
@@ -417,9 +417,9 @@ export function CompareUniversities() {
 
         {/* Peer Insights Section */}
         {selectedUniversities.length > 0 && (
-          <div className="mt-6 bg-white rounded-lg shadow-sm p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-6">Peer Comparison Insights</h3>
-            <p className="text-gray-600 mb-6">
+          <div className="mt-6 bg-card text-card-foreground border rounded-lg shadow-sm p-6">
+            <h3 className="text-lg font-semibold mb-6">Peer Comparison Insights</h3>
+            <p className="text-muted-foreground mb-6">
               See how fellow applicants are progressing with their applications to understand benchmarks and get motivated.
             </p>
             
@@ -433,10 +433,10 @@ export function CompareUniversities() {
                 const userTasksCompleted = Object.values(university.taskBreakdown).reduce((sum, count) => sum + count, 0) - university.tasksRemaining;
 
                 return (
-                  <div key={university.id} className="border border-gray-200 rounded-lg overflow-hidden">
-                    <div className="bg-gray-50 px-4 py-3 border-b">
-                      <h4 className="font-medium text-gray-900">{university.name}</h4>
-                      <p className="text-sm text-gray-600">{university.country} • {university.program_type}</p>
+              <div key={university.id} className="border border-border rounded-lg overflow-hidden">
+                <div className="bg-muted px-4 py-3 border-b">
+                  <h4 className="font-medium">{university.name}</h4>
+                  <p className="text-sm text-muted-foreground">{university.country} • {university.program_type}</p>
                     </div>
                     
                     <div className="p-4">
@@ -457,8 +457,8 @@ export function CompareUniversities() {
 
         {/* Export Options */}
         {selectedUniversities.length > 0 && (
-          <div className="mt-6 bg-white rounded-lg shadow-sm p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Export Comparison</h3>
+          <div className="mt-6 bg-card text-card-foreground border rounded-lg shadow-sm p-6">
+            <h3 className="text-lg font-semibold mb-4">Export Comparison</h3>
             <div className="flex gap-3">
               <button className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
                 Export as PDF

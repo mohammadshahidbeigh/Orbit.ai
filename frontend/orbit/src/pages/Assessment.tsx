@@ -400,13 +400,13 @@ export function Assessment({ onClose, selectedUniversity, onComplete }: Assessme
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-background py-8">
       <div className="max-w-4xl mx-auto px-4">
-        <div className="bg-white rounded-lg shadow-lg p-8 relative">
+        <div className="bg-card text-card-foreground border rounded-lg shadow-lg p-8 relative">
           {onClose && (
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+              className="absolute top-4 right-4 text-muted-foreground hover:opacity-80"
               aria-label="Close assessment"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -415,26 +415,26 @@ export function Assessment({ onClose, selectedUniversity, onComplete }: Assessme
             </button>
           )}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            <h1 className="text-3xl font-bold mb-2">
               {selectedUniversity ? 'University Assessment' : 'University Assessment'}
             </h1>
-            <p className="text-gray-600">
+            <p className="text-muted-foreground">
               {selectedUniversity 
                 ? `Complete your profile to assess your fit with ${selectedUniversity.name}`
                 : 'Tell us about your academic profile and preferences to get personalized university recommendations.'
               }
             </p>
             {selectedUniversity && (
-              <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+              <div className="mt-4 p-4 bg-muted rounded-lg border">
                 <div className="flex items-center gap-3">
-                  <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center">
-                    <span className="text-lg font-medium text-blue-600">
+                  <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                    <span className="text-lg font-medium text-primary">
                       {selectedUniversity.name.charAt(0)}
                     </span>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-blue-900">{selectedUniversity.name}</h3>
-                    <p className="text-sm text-blue-700">
+                    <h3 className="font-semibold">{selectedUniversity.name}</h3>
+                    <p className="text-sm text-muted-foreground">
                       {selectedUniversity.country} • {selectedUniversity.program_type}
                       {selectedUniversity.world_ranking && ` • Rank #${selectedUniversity.world_ranking}`}
                     </p>
@@ -452,18 +452,18 @@ export function Assessment({ onClose, selectedUniversity, onComplete }: Assessme
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
                     index + 1 <= currentStep
                       ? 'bg-blue-500 text-white'
-                      : 'bg-gray-200 text-gray-600'
+                      : 'bg-muted text-muted-foreground'
                   }`}>
                     {index + 1}
                   </div>
                   <span className={`ml-2 text-sm ${
-                    index + 1 <= currentStep ? 'text-blue-600' : 'text-gray-500'
+                    index + 1 <= currentStep ? 'text-blue-600' : 'text-muted-foreground'
                   }`}>
                     {step.title}
                   </span>
                   {index < steps.length - 1 && (
                     <div className={`w-16 h-0.5 mx-4 ${
-                      index + 1 < currentStep ? 'bg-blue-500' : 'bg-gray-200'
+                      index + 1 < currentStep ? 'bg-blue-500' : 'bg-muted'
                     }`} />
                   )}
                 </div>
@@ -483,7 +483,7 @@ export function Assessment({ onClose, selectedUniversity, onComplete }: Assessme
               disabled={currentStep === 1}
               className={`px-6 py-2 rounded-md ${
                 currentStep === 1
-                  ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                  ? 'bg-muted text-muted-foreground cursor-not-allowed'
                   : 'bg-gray-500 text-white hover:bg-gray-600'
               }`}
             >
@@ -512,8 +512,8 @@ export function Assessment({ onClose, selectedUniversity, onComplete }: Assessme
           </div>
 
           {assessmentMutation.isError && (
-            <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-md">
-              <p className="text-red-600">
+            <div className="mt-4 p-4 bg-red-500/10 border border-red-500/20 rounded-md">
+              <p className="text-red-500">
                 Error submitting assessment. Please try again.
               </p>
             </div>

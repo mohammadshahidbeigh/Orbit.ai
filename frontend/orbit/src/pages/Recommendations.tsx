@@ -80,10 +80,10 @@ export function Recommendations() {
 
   if (!recommendationsData || !topUniversities || topUniversities.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">No Recommendations Found</h1>
-          <p className="text-gray-600 mb-6">Please complete the assessment first.</p>
+          <h1 className="text-2xl font-bold text-foreground mb-4">No Recommendations Found</h1>
+          <p className="text-muted-foreground mb-6">Please complete the assessment first.</p>
           <button
             onClick={() => navigate('/manage-schools')}
             className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
@@ -96,13 +96,13 @@ export function Recommendations() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-background py-8">
       <div className="max-w-7xl mx-auto px-4">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <h1 className="text-3xl font-bold text-foreground mb-2">
             Your University Recommendations
           </h1>
-          <p className="text-gray-600">
+          <p className="text-muted-foreground">
             Based on your assessment, here are your top {topUniversities.length} university matches.
           </p>
         </div>
@@ -113,19 +113,19 @@ export function Recommendations() {
              {topUniversities.map((university) => (
               <div
                 key={university.id}
-                className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer"
+                className="bg-card text-card-foreground border rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow cursor-pointer"
                 onClick={() => setSelectedUniversity(university)}
               >
                 <div className="flex justify-between items-start mb-4">
                   <div>
-                    <h3 className="text-xl font-semibold text-gray-900 mb-1">
+                    <h3 className="text-xl font-semibold mb-1">
                       #{university.rank_position} {university.name}
                     </h3>
-                    <p className="text-gray-600 mb-2">
+                    <p className="text-muted-foreground mb-2">
                       {university.country} • {university.program_type} in {university.field_of_study}
                     </p>
                     <div className="flex items-center gap-2">
-                      <span className="text-sm text-gray-500">
+                      <span className="text-sm text-muted-foreground">
                         World Ranking: #{university.world_ranking}
                       </span>
                     </div>
@@ -142,11 +142,11 @@ export function Recommendations() {
 
                 {/* Breakdown Bars */}
                 <div className="space-y-2 mb-4">
-                  <div className="text-sm font-medium text-gray-700">Match Breakdown:</div>
+                  <div className="text-sm font-medium">Match Breakdown:</div>
                   <div className="grid grid-cols-2 gap-2">
                     {Object.entries(university.breakdown).slice(0, 6).map(([key, value]) => (
                       <div key={key} className="flex items-center justify-between">
-                        <span className="text-xs text-gray-600 capitalize">
+                        <span className="text-xs text-muted-foreground capitalize">
                           {key === 'gmat' ? 'GMAT' : 
                            key === 'gpa' ? 'GPA' : 
                            key === 'program' ? 'Program' :
@@ -155,13 +155,13 @@ export function Recommendations() {
                            key === 'acceptance' ? 'Acceptance' : key}
                         </span>
                         <div className="flex items-center">
-                          <div className="w-16 h-2 bg-gray-200 rounded-full mr-2">
+                          <div className="w-16 h-2 bg-muted rounded-full mr-2">
                             <div 
                               className="h-2 bg-blue-500 rounded-full" 
                               style={{ width: `${value}%` }}
                             />
                           </div>
-                          <span className="text-xs text-gray-600">{value}%</span>
+                          <span className="text-xs text-muted-foreground">{value}%</span>
                         </div>
                       </div>
                     ))}
@@ -170,10 +170,10 @@ export function Recommendations() {
 
                 {/* Top Explanations */}
                 <div className="mb-4">
-                  <div className="text-sm font-medium text-gray-700 mb-2">Why this match:</div>
+                  <div className="text-sm font-medium mb-2">Why this match:</div>
                   <div className="space-y-1">
                     {university.explanation.slice(0, 2).map((explanation, idx) => (
-                      <div key={idx} className="text-sm text-gray-600">
+                      <div key={idx} className="text-sm text-muted-foreground">
                         • {explanation}
                       </div>
                     ))}
@@ -208,25 +208,25 @@ export function Recommendations() {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Algorithm Info */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            <div className="bg-card text-card-foreground border rounded-lg shadow-sm p-6">
+              <h3 className="text-lg font-semibold mb-4">
                 Algorithm Details
               </h3>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Universities Evaluated:</span>
+                  <span className="text-muted-foreground">Universities Evaluated:</span>
                   <span className="font-medium">{recommendationsData?.total_universities_evaluated || 0}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Algorithm Version:</span>
+                  <span className="text-muted-foreground">Algorithm Version:</span>
                   <span className="font-medium">{recommendationsData?.algorithm_version || '1.0'}</span>
                 </div>
               </div>
             </div>
 
             {/* Weight Summary */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            <div className="bg-card text-card-foreground border rounded-lg shadow-sm p-6">
+              <h3 className="text-lg font-semibold mb-4">
                 Your Priorities
               </h3>
               <div className="space-y-2">
@@ -236,7 +236,7 @@ export function Recommendations() {
                   .slice(0, 5)
                   .map(([key, weight]) => (
                     <div key={key} className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600 capitalize">
+                      <span className="text-sm text-muted-foreground capitalize">
                         {key.replace('weight_', '').replace('_', ' ')}
                       </span>
                       <span className="text-sm font-medium">
@@ -248,8 +248,8 @@ export function Recommendations() {
             </div>
 
             {/* Actions */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            <div className="bg-card text-card-foreground border rounded-lg shadow-sm p-6">
+              <h3 className="text-lg font-semibold mb-4">
                 Next Steps
               </h3>
               <div className="space-y-3">
@@ -272,21 +272,21 @@ export function Recommendations() {
 
         {/* University Detail Modal */}
         {selectedUniversity && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
+            <div className="bg-card text-card-foreground border rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
               <div className="p-6">
                 <div className="flex justify-between items-start mb-6">
                   <div>
-                    <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                    <h2 className="text-2xl font-bold mb-2">
                       {selectedUniversity.name}
                     </h2>
-                    <p className="text-gray-600">
+                    <p className="text-muted-foreground">
                       {selectedUniversity.country} • {selectedUniversity.program_type} in {selectedUniversity.field_of_study}
                     </p>
                   </div>
                   <button
                     onClick={() => setSelectedUniversity(null)}
-                    className="text-gray-400 hover:text-gray-600"
+                    className="text-muted-foreground hover:opacity-80"
                   >
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -296,12 +296,12 @@ export function Recommendations() {
 
                 <div className="grid grid-cols-2 gap-6 mb-6">
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Match Scores</h3>
+                    <h3 className="text-lg font-semibold mb-3">Match Scores</h3>
                     <div className="space-y-3">
                       {Object.entries(selectedUniversity.breakdown).map(([key, value]) => (
                         <div key={key}>
                           <div className="flex justify-between items-center mb-1">
-                            <span className="text-sm font-medium text-gray-700 capitalize">
+                            <span className="text-sm font-medium capitalize">
                               {key === 'gmat' ? 'GMAT Score Match' : 
                                key === 'gpa' ? 'GPA Compatibility' : 
                                key === 'program' ? 'Program & Field Match' :
@@ -315,7 +315,7 @@ export function Recommendations() {
                             </span>
                             <span className="text-sm font-medium">{value}%</span>
                           </div>
-                          <div className="w-full h-2 bg-gray-200 rounded-full">
+                          <div className="w-full h-2 bg-muted rounded-full">
                             <div 
                               className="h-2 bg-blue-500 rounded-full" 
                               style={{ width: `${value}%` }}
@@ -327,10 +327,10 @@ export function Recommendations() {
                   </div>
 
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Why This Match</h3>
+                    <h3 className="text-lg font-semibold mb-3">Why This Match</h3>
                     <div className="space-y-2">
                       {selectedUniversity.explanation.map((explanation, idx) => (
-                        <div key={idx} className="text-sm text-gray-600">
+                        <div key={idx} className="text-sm text-muted-foreground">
                           • {explanation}
                         </div>
                       ))}

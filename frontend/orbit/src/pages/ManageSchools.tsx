@@ -72,8 +72,8 @@ export function ManageSchools() {
           {[...Array(4)].map((_, i) => (
             <Card key={i} className="animate-pulse">
               <CardHeader>
-                <div className="h-6 bg-gray-200 rounded"></div>
-                <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+                <div className="h-6 bg-muted rounded"></div>
+                <div className="h-4 bg-muted rounded w-2/3"></div>
               </CardHeader>
             </Card>
           ))}
@@ -190,20 +190,20 @@ export function ManageSchools() {
         <CardContent>
           <div className="flex gap-4">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
               <input
                 type="text"
                 placeholder="Search by university name..."
-                className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full pl-10 pr-10 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground border-border"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
               {(isTyping || isLoadingUniversities) && (
-                <Loader2 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-500 h-5 w-5 animate-spin" />
+                <Loader2 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-primary h-5 w-5 animate-spin" />
               )}
             </div>
             <select
-              className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              className="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground border-border"
               value={selectedProgram}
               onChange={(e) => setSelectedProgram(e.target.value)}
             >
@@ -228,7 +228,7 @@ export function ManageSchools() {
                     <div>
                       <CardTitle className="text-lg">{uni.university_name}</CardTitle>
                       <CardDescription className="flex items-center gap-2 mt-1">
-                        <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                <span className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded">
                           #{uni.world_ranking}
                         </span>
                         <span className="text-xs">{uni.country}</span>
