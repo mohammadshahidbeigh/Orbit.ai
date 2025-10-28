@@ -77,10 +77,11 @@ An enhanced version of Orbit AI's Application Planner with intelligent universit
 
 ### Frontend
 - **Framework**: React 19 with TypeScript
-- **Styling**: Tailwind CSS
-- **Components**: Custom UI components inspired by shadcn
+- **Styling**: Tailwind CSS 
 - **State Management**: React Query (TanStack Query) + Context API
 - **Routing**: React Router v6
+- **Notifications**: React-toastify for notifications
+- **Search**: Lodash.debounce for better search
 - **Forms**: React Hook Form + Zod validation
 - **Charts**: Recharts
 - **Build Tool**: Vite
