@@ -95,11 +95,11 @@ An enhanced version of Orbit AI's Application Planner with intelligent universit
   - **Softmax Transformation**: Converts raw match scores to probability distributions
   - **Similarity Metrics**: Custom scoring functions for 9 evaluation criteria
   - **Dynamic Weighting**: User-customizable priority weights with automatic normalization
-- **Deployment**: Render/Railway ready
+- **Deployment**: Render ready
 
 ### Deployment
 - **Frontend**: Vercel
-- **Backend**: Render/Railway
+- **Backend**: Render
 - **Database**: Supabase
 
 ## Getting Started
@@ -296,7 +296,7 @@ For each recommendation, the system shows:
 5. **Export capabilities** for better external integration
 6. **Responsive design** for mobile users
 7. **Cleaner, modern UI** with Tailwind CSS
-8. **Explainable AI** with detailed criterion breakdowns
+
 
 ## Demo Data
 
@@ -307,7 +307,7 @@ The database is seeded with:
 
 ## Future Enhancements (Not Implemented)
 
-- User authentication and profile management
+- User profile management
 - Advanced filtering and search
 - Dark mode toggle
 - Push notifications for deadlines
