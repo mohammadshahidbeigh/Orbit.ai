@@ -83,7 +83,6 @@ An enhanced version of Orbit AI's Application Planner with intelligent universit
 - **Routing**: React Router v6
 - **Forms**: React Hook Form + Zod validation
 - **Charts**: Recharts
-- **Drag & Drop**: dnd-kit
 - **Build Tool**: Vite
 
 ### Backend
