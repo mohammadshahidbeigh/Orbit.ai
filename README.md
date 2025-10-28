@@ -198,7 +198,7 @@ Orbit_AI/
 ## Database Schema
 
 ### Core Tables
-- `universities`: 30 top-ranked universities with enhanced fields (avg_gmat_score, avg_gpa, acceptance_rate, scholarship_rate, etc.)
+- `universities`: 20 top-ranked universities with enhanced fields (avg_gmat_score, avg_gpa, acceptance_rate, scholarship_rate, etc.)
 - `user_universities`: User's selected schools with deadlines and program types
 - `tasks`: Application tasks organized by 7 phases
 - `peer_stats`: Aggregated peer progress data for insights
@@ -302,7 +302,7 @@ For each recommendation, the system shows:
 ## Demo Data
 
 The database is seeded with:
-- **30 top-ranked universities** (MIT, Stanford, Harvard, etc.)
+- **20 top-ranked universities** (MIT, Stanford, Harvard, etc.)
 - **Realistic peer statistics** for each university
 - **Sample tasks** auto-generated based on deadlines
 
