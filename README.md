@@ -32,7 +32,6 @@ An enhanced version of Orbit AI's Application Planner with intelligent universit
   3. **Output**: Top 5 university recommendations ranked by match score with detailed breakdown
 
 - **Key Features**:
-  - **Explainable AI**: Shows why each university was recommended with criterion-by-criterion breakdown
   - **Dynamic Weighting**: Users can adjust priority weights to personalize results
   - **Normalization**: All metrics scaled to [0,1] for fair comparison
   - **Probability Scoring**: Uses Softmax to convert raw scores into admission probability estimates
