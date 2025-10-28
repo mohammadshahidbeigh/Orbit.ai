@@ -32,7 +32,6 @@ An enhanced version of Orbit AI's Application Planner with intelligent universit
   3. **Output**: Top 5 university recommendations ranked by match score with detailed breakdown
 
 - **Key Features**:
-  - **Explainable AI**: Shows why each university was recommended with criterion-by-criterion breakdown
   - **Dynamic Weighting**: Users can adjust priority weights to personalize results
   - **Normalization**: All metrics scaled to [0,1] for fair comparison
   - **Probability Scoring**: Uses Softmax to convert raw scores into admission probability estimates
@@ -78,13 +77,13 @@ An enhanced version of Orbit AI's Application Planner with intelligent universit
 
 ### Frontend
 - **Framework**: React 19 with TypeScript
-- **Styling**: Tailwind CSS
-- **Components**: Custom UI components inspired by shadcn
+- **Styling**: Tailwind CSS 
 - **State Management**: React Query (TanStack Query) + Context API
 - **Routing**: React Router v6
+- **Notifications**: React-toastify for notifications
+- **Search**: Lodash.debounce for better search
 - **Forms**: React Hook Form + Zod validation
 - **Charts**: Recharts
-- **Drag & Drop**: dnd-kit
 - **Build Tool**: Vite
 
 ### Backend
@@ -97,11 +96,11 @@ An enhanced version of Orbit AI's Application Planner with intelligent universit
   - **Softmax Transformation**: Converts raw match scores to probability distributions
   - **Similarity Metrics**: Custom scoring functions for 9 evaluation criteria
   - **Dynamic Weighting**: User-customizable priority weights with automatic normalization
-- **Deployment**: Render/Railway ready
+- **Deployment**: Render ready
 
 ### Deployment
 - **Frontend**: Vercel
-- **Backend**: Render/Railway
+- **Backend**: Render
 - **Database**: Supabase
 
 ## Getting Started
@@ -298,7 +297,7 @@ For each recommendation, the system shows:
 5. **Export capabilities** for better external integration
 6. **Responsive design** for mobile users
 7. **Cleaner, modern UI** with Tailwind CSS
-8. **Explainable AI** with detailed criterion breakdowns
+
 
 ## Demo Data
 
@@ -309,7 +308,7 @@ The database is seeded with:
 
 ## Future Enhancements (Not Implemented)
 
-- User authentication and profile management
+- User profile management
 - Advanced filtering and search
 - Dark mode toggle
 - Push notifications for deadlines
