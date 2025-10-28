@@ -45,6 +45,7 @@ export function PeerInsights() {
   const [sortBy, setSortBy] = useState('progress');
   const [viewMode, setViewMode] = useState<'grid' | 'detailed'>('grid');
   const [isCalculating, setIsCalculating] = useState(false);
+  const [showMobileControls, setShowMobileControls] = useState(false);
 
   // Fetch user's universities
   const { data: userUniversitiesResponse, isLoading: isLoadingUser } = useQuery({
@@ -215,11 +216,11 @@ export function PeerInsights() {
       <div className="max-w-7xl mx-auto px-4">
         {/* Header */}
         <div className="mb-8">
-          <div className="flex items-center gap-3 mb-3">
+          <div className="flex items-center gap-3 mb-3 flex-wrap">
             <Users className="h-8 w-8 text-blue-600" />
-            <h1 className="text-3xl font-bold text-gray-900">Peer Comparison Insights</h1>
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Peer Comparison Insights</h1>
           </div>
-          <p className="text-gray-600 text-lg">
+          <p className="text-gray-600 text-base md:text-lg">
             Discover how fellow applicants are progressing with their university applications. 
             Get motivated with anonymized benchmarks and realistic expectations.
           </p>
@@ -273,10 +274,91 @@ export function PeerInsights() {
         </div>
 
         {/* Controls */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-          <div className="flex flex-wrap gap-4 items-center justify-between">
+        <div className="bg-white rounded-lg shadow-sm p-4 md:p-6 mb-8">
+          {/* Mobile controls header */}
+          <div className="flex items-center justify-between md:hidden">
+            <button
+              onClick={() => setShowMobileControls(!showMobileControls)}
+              className="inline-flex items-center gap-2 px-3 py-2 text-sm rounded-md border hover:bg-gray-50"
+            >
+              <Filter className="h-4 w-4 text-gray-500" />
+              Filters & Sort
+            </button>
+            <div className="flex bg-gray-100 rounded-md p-1">
+              <button
+                onClick={() => setViewMode('grid')}
+                className={`px-3 py-1 text-sm rounded ${viewMode === 'grid' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600'}`}
+                aria-label="Grid view"
+              >
+                Grid
+              </button>
+              <button
+                onClick={() => setViewMode('detailed')}
+                className={`px-3 py-1 text-sm rounded ${viewMode === 'detailed' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600'}`}
+                aria-label="Detailed view"
+              >
+                Detail
+              </button>
+            </div>
+          </div>
+
+          {/* Mobile panel */}
+          {showMobileControls && (
+            <div className="md:hidden mt-4 space-y-4">
+              <div className="flex items-center gap-2">
+                <label className="text-sm font-medium text-gray-700">Filter:</label>
+                <select
+                  value={selectedFilter}
+                  onChange={(e) => setSelectedFilter(e.target.value)}
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  {FILTER_OPTIONS.map(option => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex items-center gap-2">
+                <label className="text-sm font-medium text-gray-700">Sort by:</label>
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  {SORT_OPTIONS.map(option => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <button
+                  onClick={handleSeedSampleStats}
+                  disabled={isCalculating}
+                  className="flex items-center justify-center gap-2 px-4 py-2 bg-green-500 text-white text-sm rounded-md hover:bg-green-600 disabled:opacity-50 transition-colors"
+                  title="Seed sample peer statistics data for demo purposes"
+                >
+                  <RefreshCw className={`h-4 w-4 ${isCalculating ? 'animate-spin' : ''}`} />
+                  {isCalculating ? 'Seeding...' : 'Seed Sample Data'}
+                </button>
+                <button
+                  onClick={handleCalculateStats}
+                  disabled={isCalculating}
+                  className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-500 text-white text-sm rounded-md hover:bg-blue-600 disabled:opacity-50 transition-colors"
+                  title="Calculate peer statistics from actual user data"
+                >
+                  <RefreshCw className={`h-4 w-4 ${isCalculating ? 'animate-spin' : ''}`} />
+                  {isCalculating ? 'Calculating...' : 'Refresh Data'}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Desktop controls */}
+          <div className="hidden md:flex flex-wrap gap-4 items-center justify-between">
             <div className="flex flex-wrap gap-4 items-center">
-              {/* Filter */}
               <div className="flex items-center gap-2">
                 <Filter className="h-4 w-4 text-gray-500" />
                 <label className="text-sm font-medium text-gray-700">Filter:</label>
@@ -292,8 +374,6 @@ export function PeerInsights() {
                   ))}
                 </select>
               </div>
-
-              {/* Sort */}
               <div className="flex items-center gap-2">
                 <span className="text-sm font-medium text-gray-700">Sort by:</span>
                 <select
@@ -311,7 +391,6 @@ export function PeerInsights() {
             </div>
 
             <div className="flex gap-2 items-center">
-              {/* View Mode Toggle */}
               <div className="flex bg-gray-100 rounded-md p-1">
                 <button
                   onClick={() => setViewMode('grid')}
@@ -327,7 +406,6 @@ export function PeerInsights() {
                 </button>
               </div>
 
-              {/* Action Buttons */}
               <div className="flex gap-2">
                 <button
                   onClick={handleSeedSampleStats}
